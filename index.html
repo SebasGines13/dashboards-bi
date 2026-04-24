@@ -3,1775 +3,560 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboards y Visualización</title>
+<title>Diccionario de Datos — Proyecto Olímpico</title>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  /* ── Light theme (default) ── */
-  --bg:#e2e4f4;--surface:#ffffff;--border:#8890c0;
-  --p0:#6a4edf;--p1:#5a48d2;--p2:#2d62cc;--p3:#1e8a4a;
-  --p4:#a86410;--p5:#a82470;--p6:#b52828;--pbib:#444;
-  --text:#0a0c18;--muted:#32355a;--dim:#52567c;
-  --card-bg:rgba(0,0,0,.07);--card-bg2:rgba(0,0,0,.12);
-  --spark:rgba(0,0,0,.22);--hole-fill:#e2e4f4;
-  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
-}
-body.dark{
-  /* ── Dark theme ── */
-  --bg:#0d0f18;--surface:#141720;--border:#252840;
-  --p0:#9d7cff;--p1:#7c6af7;--p2:#5b8af7;--p3:#4caf7d;
-  --p4:#f7a94b;--p5:#e05cad;--p6:#f76a6a;--pbib:#aaa;
-  --text:#f0f2ff;--muted:#7a7d9a;--dim:#4a4d68;
-  --card-bg:rgba(255,255,255,.04);--card-bg2:rgba(255,255,255,.06);
-  --spark:rgba(255,255,255,.18);--hole-fill:#0d0f18;
-}
-body{background:var(--bg);color:var(--text);font-family:var(--font);height:100vh;overflow:hidden;display:flex;flex-direction:column;transition:background .3s,color .3s;}
+  :root {
+    --blue:    #003f88;
+    --red:     #c1121f;
+    --gold:    #e9c46a;
+    --green:   #2a9d8f;
+    --light:   #f8f9fa;
+    --border:  #dee2e6;
+    --text:    #212529;
+    --muted:   #6c757d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; color: var(--text); background: #fff; }
 
-/* ── Topbar ── */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:9px 18px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;gap:10px;}
-.topbar-title{font-size:.9rem;font-weight:700;color:var(--muted);white-space:nowrap;letter-spacing:.3px}
-.pills{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1;padding:0 8px}
-.pills::-webkit-scrollbar{display:none}
-.pill{background:none;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-family:var(--font);font-size:.86rem;font-weight:600;cursor:pointer;transition:all .18s;color:var(--muted);white-space:nowrap;}
-.pill:hover{color:var(--text);border-color:var(--dim)}
-.pill.active{color:var(--p1)}
-/* Light mode active pills */
-.pill[data-p="0"].active,.pill[data-p="1"].active{background:rgba(107,91,224,.1);border-color:var(--p1);color:var(--p1)}
-.pill[data-p="2"].active{background:rgba(61,110,217,.1);border-color:var(--p2);color:var(--p2)}
-.pill[data-p="3"].active{background:rgba(37,150,85,.1);border-color:var(--p3);color:var(--p3)}
-.pill[data-p="4"].active{background:rgba(192,122,24,.1);border-color:var(--p4);color:var(--p4)}
-.pill[data-p="5"].active{background:rgba(184,56,128,.1);border-color:var(--p5);color:var(--p5)}
-.pill[data-p="6"].active{background:rgba(201,61,61,.1);border-color:var(--p6);color:var(--p6)}
-.pill[data-p="bib"].active{background:rgba(0,0,0,.06);border-color:var(--pbib);color:var(--muted)}
-/* Dark mode active pills */
-body.dark .pill.active{color:#fff}
-body.dark .pill[data-p="0"].active,body.dark .pill[data-p="1"].active{background:#2a1e7a;border-color:var(--p1)}
-body.dark .pill[data-p="2"].active{background:#1a2f70;border-color:var(--p2)}
-body.dark .pill[data-p="3"].active{background:#163a28;border-color:var(--p3)}
-body.dark .pill[data-p="4"].active{background:#3d2e10;border-color:var(--p4)}
-body.dark .pill[data-p="5"].active{background:#3a1230;border-color:var(--p5)}
-body.dark .pill[data-p="6"].active{background:#3a1212;border-color:var(--p6)}
-body.dark .pill[data-p="bib"].active{background:#252525;border-color:var(--pbib)}
-.slide-counter{font-size:.9rem;color:var(--text);font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums;background:var(--card-bg2);border:1px solid var(--border);border-radius:10px;padding:3px 10px}
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, var(--blue) 0%, #1a5276 100%);
+    color: #fff; padding: 2.5rem 3rem;
+  }
+  header h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: .4rem; }
+  header p  { opacity: .85; font-size: .95rem; }
+  .badges   { display: flex; gap: .5rem; margin-top: 1rem; flex-wrap: wrap; }
+  .badge    { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3);
+              border-radius: 20px; padding: .25rem .75rem; font-size: .8rem; }
 
-/* ── Stage ── */
-.stage{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.slide{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:36px 56px;text-align:center;animation:sIn .25s ease;background:var(--surface);overflow:hidden;}
-.slide.active{display:flex}
-/* prevent grid/flex children from overflowing their cells */
-.slide [style*="display:grid"] > *,.slide [style*="display: grid"] > *{min-width:0}
-/* ensure SVGs inside slides respect their container */
-.slide svg{max-width:100%;}
-@keyframes sIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  /* ── LAYOUT ── */
+  .container { max-width: 1200px; margin: 0 auto; padding: 2rem 2rem 4rem; }
 
-/* ── Type scale (ratio ≈ 1.30) ──────────────────────────────────────
-   label  0.78rem  uppercase eyebrow
-   sub    clamp(1rem,   1.8vw, 1.25rem)   body / lead text
-   h3     clamp(1.3rem, 2.4vw, 1.7rem)    card/section header
-   h2     clamp(1.8rem, 3.2vw, 2.55rem)   slide title
-   h1     clamp(3.2rem, 7.5vw, 5.8rem)    cover / big statement
-   big-num clamp(5.5rem,12vw,  9.5rem)    stat
-────────────────────────────────────────────────────────────────── */
-.label{font-size:clamp(.72rem,1.1vw,.82rem);font-weight:700;text-transform:uppercase;letter-spacing:1.8px;margin-bottom:14px;opacity:.92}
-.slide h1{font-size:clamp(3.2rem,7.5vw,5.8rem);font-weight:800;line-height:1.06;letter-spacing:-2px;margin-bottom:16px}
-.slide h2{font-size:clamp(1.8rem,3.2vw,2.55rem);font-weight:700;line-height:1.15;margin-bottom:14px}
-.slide h3{font-size:clamp(1.3rem,2.4vw,1.7rem);font-weight:700;line-height:1.3;margin-bottom:10px}
-.sub{font-size:clamp(1rem,1.8vw,1.25rem);color:var(--muted);line-height:1.7;max-width:720px;font-weight:500}
-.big-num{font-size:clamp(5.5rem,12vw,9.5rem);font-weight:900;line-height:1;letter-spacing:-4px}
-.big-label{font-size:clamp(1rem,1.8vw,1.25rem);color:var(--muted);margin-top:10px;letter-spacing:.3px}
+  /* ── NAV TABS ── */
+  .tabs { display: flex; gap: .25rem; border-bottom: 2px solid var(--border);
+          margin-bottom: 2rem; flex-wrap: wrap; }
+  .tab  { padding: .6rem 1.2rem; cursor: pointer; border-radius: 6px 6px 0 0;
+          font-size: .88rem; font-weight: 500; border: 1px solid transparent;
+          border-bottom: none; color: var(--muted); transition: all .15s; }
+  .tab:hover  { background: var(--light); color: var(--text); }
+  .tab.active { background: #fff; border-color: var(--border); color: var(--blue);
+                margin-bottom: -2px; border-bottom: 2px solid #fff; }
+  .tab-raw    { border-left: 3px solid var(--red); }
+  .tab-proc   { border-left: 3px solid var(--green); }
+  .tab-schema { border-left: 3px solid var(--gold); }
 
-/* Cards and layouts */
-.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;max-width:840px;margin:18px 0}
-.cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:800px;margin:16px 0}
-.col-card{background:var(--card-bg);border:1px solid var(--border);border-radius:13px;padding:22px 16px;text-align:center;}
-.col-card .icon{font-size:2.16rem;margin-bottom:8px}
-.col-card h3{font-size:clamp(1.1rem,2vw,1.3rem);font-weight:700;margin-bottom:6px}
-.col-card p{font-size:clamp(.92rem,1.6vw,1.08rem);color:var(--muted);line-height:1.55}
-.col2-card{background:var(--card-bg);border:1px solid var(--border);border-radius:13px;padding:26px;text-align:left}
-.col2-card h3{font-size:clamp(1.1rem,2vw,1.3rem);font-weight:700;margin-bottom:10px}
-.col2-card p{font-size:clamp(.92rem,1.6vw,1.08rem);color:var(--muted);line-height:1.6}
-.col2-card ul{margin-top:8px;padding-left:16px;display:flex;flex-direction:column;gap:6px}
-.col2-card ul li{font-size:clamp(.92rem,1.6vw,1.08rem);color:var(--muted);line-height:1.45}
+  /* ── PANELS ── */
+  .panel { display: none; }
+  .panel.active { display: block; }
 
-/* Key points */
-.kp{list-style:none;text-align:left;max-width:680px;width:100%;margin:16px 0;display:flex;flex-direction:column;gap:13px}
-.kp li{display:flex;align-items:flex-start;gap:14px;font-size:clamp(1.32rem,3.12vw,1.68rem);line-height:1.55}
-.kp li .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:8px}
-.kp li strong{color:var(--text)}
+  /* ── SUMMARY CARDS ── */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+           gap: 1rem; margin-bottom: 2rem; }
+  .card  { border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.2rem; }
+  .card-raw  { border-top: 3px solid var(--red); }
+  .card-proc { border-top: 3px solid var(--green); }
+  .card h3   { font-size: .82rem; color: var(--muted); font-weight: 600;
+               text-transform: uppercase; letter-spacing: .05em; margin-bottom: .3rem; }
+  .card .val { font-size: 1.5rem; font-weight: 700; color: var(--blue); }
+  .card .sub { font-size: .8rem; color: var(--muted); margin-top: .15rem; }
 
-/* Analogy */
-.analogy{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:28px 32px;max-width:720px;font-size:clamp(1.26rem,2.64vw,1.62rem);line-height:1.7;color:var(--text);text-align:left;margin:14px 0}
-.analogy .qm{font-size:3.36rem;line-height:.4;opacity:.15;font-family:Georgia,serif;display:block;margin-bottom:8px}
+  /* ── DATASET SECTIONS ── */
+  .dataset { margin-bottom: 3rem; }
+  .ds-header {
+    display: flex; align-items: center; gap: 1rem;
+    padding: .9rem 1.2rem; border-radius: 8px 8px 0 0;
+    border: 1px solid var(--border); border-bottom: none;
+  }
+  .ds-header.raw  { background: #fff5f5; }
+  .ds-header.proc { background: #f0faf8; }
+  .ds-title { font-size: 1rem; font-weight: 700; font-family: monospace; }
+  .ds-meta  { display: flex; gap: 1rem; margin-left: auto; flex-wrap: wrap; }
+  .ds-pill  { font-size: .75rem; padding: .2rem .6rem; border-radius: 20px; font-weight: 600; }
+  .pill-raw  { background: #fee2e2; color: #991b1b; }
+  .pill-proc { background: #d1fae5; color: #065f46; }
+  .pill-rows { background: #e0e7ff; color: #3730a3; }
+  .ds-desc  { padding: .8rem 1.2rem; background: var(--light);
+              border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+              font-size: .88rem; color: var(--muted); }
+  .ds-desc strong { color: var(--text); }
 
-/* Comparison row */
-.vs-row{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;width:100%;max-width:820px;margin:14px 0;align-items:center}
-.vs-label{font-size:1.2rem;font-weight:900;color:var(--dim);text-align:center}
-.vs-card{background:var(--card-bg);border:1px solid var(--border);border-radius:13px;padding:22px}
-.vs-card h4{font-size:clamp(1rem,1.8vw,1.2rem);font-weight:700;margin-bottom:7px}
-.vs-card p{font-size:clamp(.88rem,1.5vw,1rem);color:var(--muted);line-height:1.5}
+  /* ── FIELD TABLE ── */
+  .field-table { width: 100%; border-collapse: collapse;
+                 border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px;
+                 overflow: hidden; font-size: .85rem; }
+  .field-table th { background: var(--blue); color: #fff; text-align: left;
+                    padding: .6rem 1rem; font-weight: 600; font-size: .8rem;
+                    text-transform: uppercase; letter-spacing: .04em; }
+  .field-table td { padding: .6rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .field-table tr:last-child td { border-bottom: none; }
+  .field-table tr:hover td { background: var(--light); }
+  .fname  { font-family: monospace; font-weight: 600; color: var(--blue); font-size: .88rem; }
+  .ftype  { display: inline-block; padding: .1rem .4rem; border-radius: 4px;
+            font-size: .75rem; font-weight: 600; font-family: monospace; }
+  .type-str   { background: #fef3c7; color: #92400e; }
+  .type-int   { background: #dbeafe; color: #1e40af; }
+  .type-float { background: #ede9fe; color: #5b21b6; }
+  .type-bool  { background: #d1fae5; color: #065f46; }
+  .null-ok  { color: #059669; font-weight: 600; }
+  .null-warn{ color: #d97706; font-weight: 600; }
+  .null-high{ color: #dc2626; font-weight: 600; }
+  .note-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 6px;
+              padding: .6rem 1rem; margin-top: .5rem; font-size: .82rem; color: #78350f; }
+  .note-box::before { content: "⚠ "; }
 
-/* Color palette */
-.palette{display:flex;gap:8px;margin:16px 0;flex-wrap:wrap;justify-content:center}
-.swatch{border-radius:10px;padding:14px 18px;font-size:.86rem;font-weight:700;text-align:center;min-width:90px}
-.sw-name{font-size:.74rem;opacity:.8;margin-top:3px;font-weight:400}
+  /* ── SCHEMA ── */
+  .schema-wrap { background: #0f172a; border-radius: 8px; padding: 1.5rem 2rem;
+                 color: #e2e8f0; font-family: monospace; font-size: .85rem;
+                 line-height: 1.8; overflow-x: auto; }
+  .schema-wrap .node { color: #93c5fd; font-weight: 700; }
+  .schema-wrap .arrow { color: #fcd34d; }
+  .schema-wrap .key   { color: #86efac; }
+  .schema-wrap .cmt   { color: #6b7280; font-style: italic; }
 
-/* Chart grid */
-.chart-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;max-width:720px;width:100%;margin:14px 0}
-.cc{background:var(--card-bg);border:1px solid var(--border);border-radius:11px;padding:13px;text-align:center}
-.cc .ci{font-size:1.8rem;margin-bottom:5px}
-.cc h4{font-size:clamp(1rem,1.8vw,1.2rem);font-weight:700;margin-bottom:4px}
-.cc p{font-size:clamp(.88rem,1.5vw,1rem);color:var(--muted);line-height:1.45}
+  .relation-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; font-size: .88rem; }
+  .relation-table th { background: var(--light); border: 1px solid var(--border);
+                       padding: .6rem 1rem; text-align: left; font-weight: 600; }
+  .relation-table td { border: 1px solid var(--border); padding: .6rem 1rem; }
+  .join-key { font-family: monospace; font-weight: 600; color: #5b21b6; }
 
-/* KPI card */
-.kpi-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:20px 26px;display:flex;flex-direction:column;gap:5px;text-align:left}
-.kpi-lbl{font-size:clamp(.7rem,1vw,.78rem);font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted)}
-.kpi-val{font-size:clamp(2rem,4vw,3rem);font-weight:900;letter-spacing:-2px;line-height:1}
-.kpi-row{font-size:clamp(.82rem,1.4vw,.95rem);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.kpi-spark{height:24px;display:flex;align-items:flex-end;gap:2px;margin-top:4px}
-.kpi-spark span{width:7px;background:var(--spark);border-radius:2px 2px 0 0;transition:background .2s}
-
-/* Tool cards */
-.tool-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;max-width:800px;width:100%;margin:14px 0}
-.tc{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:left}
-.tc h4{font-size:clamp(.92rem,1.5vw,1.08rem);font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:6px}
-.tc p{font-size:clamp(.82rem,1.3vw,.9rem);color:var(--muted);line-height:1.5}
-.tc .tc-tag{font-size:clamp(.7rem,1vw,.78rem);border-radius:8px;padding:2px 8px;border:1px solid var(--border);color:var(--muted)}
-
-/* Cycle */
-.cycle{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:center;margin:18px 0}
-.cs{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:10px 15px;font-size:.96rem;font-weight:600}
-.ca{color:var(--muted);font-size:1.2rem}
-
-/* Z-pattern diagram */
-.z-box{position:relative;width:460px;height:220px;border:1px solid var(--border);border-radius:12px;background:var(--card-bg);overflow:hidden;margin:14px 0;flex-shrink:0}
-.z-zone{position:absolute;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700}
-
-/* Highlight chip */
-.chip{display:inline-block;border-radius:8px;padding:3px 10px;font-size:.9rem;font-weight:700;margin:2px}
-
-/* Bibliography */
-.bib-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;width:100%;max-width:900px;margin:10px 0;text-align:left}
-.bc{background:var(--card-bg);border:1px solid var(--border);border-radius:11px;padding:13px 15px}
-.bc .bt{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:4px}
-.bc .bn{font-size:1rem;font-weight:600;color:var(--text);margin-bottom:2px;line-height:1.3}
-.bc .ba{font-size:.89rem;color:var(--muted)}
-.bc .bs{font-size:.86rem;color:var(--muted);font-style:italic;margin-top:2px}
-
-/* ── Decision table (¿Cuál elegir?) ── */
-.dtable{width:100%;max-width:740px;margin:14px 0;display:flex;flex-direction:column;gap:8px;text-align:left}
-.drow{display:grid;grid-template-columns:1fr 28px auto;align-items:center;gap:10px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:12px 16px}
-.drow:hover{background:var(--card-bg2);transition:background .15s}
-.dc{font-size:clamp(.88rem,1.5vw,1rem);line-height:1.45;color:var(--muted)}
-.dc strong{color:var(--text)}
-.darr{font-size:clamp(1rem,1.8vw,1.2rem);color:var(--dim);text-align:center}
-.dtool{font-size:clamp(.95rem,1.8vw,1.1rem);font-weight:800;white-space:nowrap;text-align:right}
-
-/* ── Mini dashboard illustrations ── */
-.mini-dash{border-radius:10px;border:1px solid var(--border);background:var(--card-bg);overflow:hidden}
-
-/* ── Chart SVG inside chart cards ── */
-.cc svg{display:block;margin:0 auto 6px;width:70px;height:48px}
-.cc svg .bar{fill:currentColor}
-
-/* ── Pie vs Bar comparison ── */
-.pie-vs{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;width:100%;max-width:820px;margin:14px 0;align-items:center}
-.pvc{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center}
-.pvc h4{font-size:.98rem;font-weight:700;margin-bottom:10px}
-.pvc svg{display:block;margin:0 auto}
-
-/* ── Whitespace illustration ── */
-.ws-compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:740px;width:100%;margin:14px 0}
-.wsc{border-radius:12px;border:1px solid var(--border);background:var(--card-bg);padding:12px;aspect-ratio:16/9;position:relative;overflow:hidden}
-.wsc-label{font-size:.84rem;font-weight:700;margin-bottom:8px;text-align:center}
-
-/* ── Bottom nav ── */
-.bottombar{display:flex;align-items:center;justify-content:center;padding:11px 20px;gap:14px;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;}
-.nbtn{background:var(--card-bg2);border:1px solid var(--border);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:1.08rem;color:var(--text);}
-.nbtn:hover{background:var(--card-bg);filter:brightness(.92)}
-.nbtn:disabled{opacity:.2;cursor:default;pointer-events:none}
-.pdots{display:flex;gap:5px;align-items:center}
-.pd{width:6px;height:6px;border-radius:50%;background:var(--dim);transition:all .22s;cursor:pointer}
-.pd.on{width:20px;border-radius:3px;background:var(--p1)}
-
-/* ── Light-mode SVG illustration fixes ── */
-/* Light-mode SVG fixes – order matters: specific rules override the base */
-body:not(.dark) .slide svg text{fill:var(--text)}
-/* preserve var() accent colors – set fill explicitly so SVG renders the var() */
-body:not(.dark) .slide svg text[fill^="var(--p"]{fill:var(--p1)}
-body:not(.dark) .slide svg text[fill="var(--p1)"]{fill:var(--p1)}
-body:not(.dark) .slide svg text[fill="var(--p2)"]{fill:var(--p2)}
-body:not(.dark) .slide svg text[fill="var(--p3)"]{fill:var(--p3)}
-body:not(.dark) .slide svg text[fill="var(--muted)"]{fill:var(--muted)}
-body:not(.dark) .slide svg text[fill="var(--dim)"]{fill:var(--dim)}
-body:not(.dark) .slide svg text[fill="var(--text)"]{fill:var(--text)}
-/* fix hardcoded dark-bg colors */
-body:not(.dark) .slide svg text[fill="#4caf7d"]{fill:#166636}
-body:not(.dark) .slide svg text[fill="#f76a6a"]{fill:#a01818}
-body:not(.dark) .slide svg text[fill="#f7a94b"]{fill:#7a4800}
-body:not(.dark) .slide svg text[fill="#f0f2ff"]{fill:var(--text)}
-body:not(.dark) .slide svg text[fill="#7c6af7"],
-body:not(.dark) .slide svg text[fill="#5b8af7"]{fill:var(--p1)}
-/* fix semi-transparent white texts (common in dark-first SVG) */
-body:not(.dark) .slide svg text[fill^="rgba(255,255,255"]{fill:var(--muted)}
-/* fix shape fills */
-body:not(.dark) .slide svg [fill="#f0f2ff"]{fill:var(--text)}
-body:not(.dark) .slide svg [fill="#0d0f18"]{fill:var(--bg)}
-body:not(.dark) .slide svg rect[fill^="rgba(255,255,255"]{fill:rgba(0,0,0,.06)}
-body:not(.dark) .slide svg circle[fill^="rgba(255,255,255"]{fill:rgba(0,0,0,.06)}
-body:not(.dark) .slide svg path[fill^="rgba(255,255,255"]{fill:rgba(0,0,0,.06)}
-body:not(.dark) .slide svg line[stroke^="rgba(255,255,255"]{stroke:rgba(0,0,0,.14)}
-body:not(.dark) .slide svg [stroke^="rgba(255,255,255"]{stroke:rgba(0,0,0,.18)}
-/* fix polyline strokes */
-body:not(.dark) .slide svg polyline[stroke^="rgba(255,255,255"]{stroke:rgba(0,0,0,.18)}
-/* SVG background panels with dark semi-transparent fills */
-body:not(.dark) .slide svg [fill^="rgba(0,0,0,.0"]{fill:rgba(0,0,0,.07)}
-body:not(.dark) .slide svg [fill="rgba(255,255,255,.025)"]{fill:rgba(0,0,0,.04)}
-body:not(.dark) .slide svg [fill="rgba(255,255,255,.02)"]{fill:rgba(0,0,0,.04)}
-body:not(.dark) .slide svg [fill="rgba(255,255,255,.03)"]{fill:rgba(0,0,0,.04)}
-
-/* ── Theme toggle button ── */
-.theme-btn{background:none;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-family:var(--font);font-size:.86rem;font-weight:600;cursor:pointer;transition:all .18s;color:var(--muted);white-space:nowrap;flex-shrink:0}
-.theme-btn:hover{color:var(--text);border-color:var(--dim)}
+  /* ── FOOTER ── */
+  footer { border-top: 1px solid var(--border); padding: 1.5rem 3rem;
+           font-size: .8rem; color: var(--muted); background: var(--light);
+           display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="topbar-title" style="display:flex;align-items:center;gap:8px">
-    <img src="https://campus.udelaciudad.edu.ar/pluginfile.php/1/theme_universidadelaciudad/logo/1774038663/Udelaciudad-logo-preferencial_de%20Bs%20As.png" alt="UdelaciudadBA" style="height:22px;width:auto;object-fit:contain;flex-shrink:0">
-    <span>Trabajo práctico · BI</span>
+<header>
+  <h1>Diccionario de Datos — Proyecto Olímpico</h1>
+  <p>Análisis del rendimiento olímpico en función de la inversión deportiva y variables macroeconómicas (2000–2020)</p>
+  <div class="badges">
+    <span class="badge">🏅 Países: GBR · USA · CHN · JPN</span>
+    <span class="badge">📅 Período: JJ.OO. de Verano 2000–2020</span>
+    <span class="badge">🗄 11 archivos · 4 fuentes</span>
   </div>
-  <div class="pills">
-    <button class="pill active" data-p="0" onclick="gp('0')">Agenda</button>
-    <button class="pill" data-p="1" onclick="gp('1')">Claudio F.</button>
-    <button class="pill" data-p="2" onclick="gp('2')">Guadalupe J.</button>
-    <button class="pill" data-p="3" onclick="gp('3')">Ariel A.</button>
-    <button class="pill" data-p="4" onclick="gp('4')">Alejandra B.</button>
-    <button class="pill" data-p="5" onclick="gp('5')">Elmer B.</button>
-    <button class="pill" data-p="6" onclick="gp('6')">Sebastián G.</button>
-    <button class="pill" data-p="bib" onclick="gp('bib')">Bibliografía</button>
-  </div>
-  <div class="slide-counter" id="ctr">1 / 2</div>
-  <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">Oscuro</button>
-</div>
+</header>
 
-<div class="stage" id="stage">
+<div class="container">
 
-<!-- ══════════════ INTRO ══════════════ -->
-<div class="slide active" data-p="0">
-  <img src="https://campus.udelaciudad.edu.ar/pluginfile.php/1/theme_universidadelaciudad/logo/1774038663/Udelaciudad-logo-preferencial_de%20Bs%20As.png" alt="Universidad de la Ciudad de Buenos Aires" style="height:52px;width:auto;object-fit:contain;margin-bottom:12px;opacity:.9">
-  <div class="label" style="color:var(--p1)">Trabajo Práctico · Business Intelligence</div>
-  <h1 style="background:linear-gradient(100deg,var(--p1),var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Dashboards y<br>Visualización</h1>
-  <p class="sub">Principios de visualización de datos · Storytelling con datos · Diseño de dashboards interactivos</p>
-  <!-- Dashboard preview illustration -->
-  <div style="width:100%;max-width:520px;margin:20px auto 0">
-  <svg viewBox="0 0 540 172" width="100%" style="max-width:500px;display:block;border-radius:14px;border:1px solid var(--border);background:var(--surface);box-shadow:0 4px 32px rgba(90,72,210,.10);overflow:hidden">
-    <!-- KPI strip -->
-    <rect x="10" y="10" width="118" height="46" rx="5" fill="rgba(124,106,247,.10)" stroke="rgba(124,106,247,.30)" stroke-width=".8"/>
-    <text x="18" y="24" font-size="8" fill="var(--dim)" font-family="system-ui" font-weight="700" letter-spacing=".5">INGRESOS</text>
-    <text x="18" y="43" font-size="14" fill="var(--text)" font-family="system-ui" font-weight="800">$2.4M</text>
-    <text x="18" y="53" font-size="7" fill="var(--p3)" font-family="system-ui">▲ +12% vs ant.</text>
-
-    <rect x="136" y="10" width="118" height="46" rx="5" fill="rgba(91,138,247,.08)" stroke="rgba(91,138,247,.25)" stroke-width=".8"/>
-    <text x="144" y="24" font-size="8" fill="var(--dim)" font-family="system-ui" font-weight="700" letter-spacing=".5">CONVERSIÓN</text>
-    <text x="144" y="43" font-size="14" fill="var(--text)" font-family="system-ui" font-weight="800">2.3%</text>
-    <text x="144" y="53" font-size="7" fill="var(--p6)" font-family="system-ui">▼ -0.2% · meta: 2.5%</text>
-
-    <rect x="262" y="10" width="118" height="46" rx="5" fill="rgba(30,138,74,.08)" stroke="rgba(30,138,74,.25)" stroke-width=".8"/>
-    <text x="270" y="24" font-size="8" fill="var(--dim)" font-family="system-ui" font-weight="700" letter-spacing=".5">NPS</text>
-    <text x="270" y="43" font-size="14" fill="var(--text)" font-family="system-ui" font-weight="800">72</text>
-    <text x="270" y="53" font-size="7" fill="var(--p3)" font-family="system-ui">▲ +4 pts · meta: 70</text>
-
-    <rect x="388" y="10" width="142" height="46" rx="5" fill="rgba(168,100,16,.08)" stroke="rgba(168,100,16,.25)" stroke-width=".8"/>
-    <text x="396" y="24" font-size="8" fill="var(--dim)" font-family="system-ui" font-weight="700" letter-spacing=".5">CAC</text>
-    <text x="396" y="43" font-size="14" fill="var(--text)" font-family="system-ui" font-weight="800">$84</text>
-    <text x="396" y="53" font-size="7" fill="var(--p3)" font-family="system-ui">▼ -8% (mejor)</text>
-
-    <!-- Line chart panel -->
-    <rect x="10" y="64" width="310" height="98" rx="5" fill="var(--card-bg)" stroke="var(--border)" stroke-width=".8"/>
-    <text x="20" y="78" font-size="8" fill="var(--dim)" font-family="system-ui" font-weight="700" letter-spacing=".5">INGRESOS — ÚLTIMOS 8 MESES</text>
-    <polyline points="22,148 60,138 100,132 140,142 182,110 222,118 262,108 298,98"
-      fill="none" stroke="var(--p1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M22,148 60,138 100,132 140,142 182,110 222,118 262,108 298,98 298,157 22,157 Z" fill="var(--p1)" opacity=".07"/>
-    <circle cx="298" cy="98" r="3" fill="var(--p1)"/>
-    <line x1="18" y1="157" x2="312" y2="157" stroke="var(--border)" stroke-width=".8"/>
-
-    <!-- Bar chart panel -->
-    <rect x="328" y="64" width="202" height="98" rx="5" fill="var(--card-bg)" stroke="var(--border)" stroke-width=".8"/>
-    <text x="338" y="78" font-size="8" fill="var(--dim)" font-family="system-ui" font-weight="700" letter-spacing=".5">CANALES</text>
-    <rect x="338" y="86"  width="90" height="9" rx="2" fill="var(--p2)" opacity=".9"/>
-    <rect x="338" y="99"  width="68" height="9" rx="2" fill="var(--p2)" opacity=".72"/>
-    <rect x="338" y="112" width="50" height="9" rx="2" fill="var(--p2)" opacity=".55"/>
-    <rect x="338" y="125" width="36" height="9" rx="2" fill="var(--p2)" opacity=".4"/>
-    <rect x="338" y="138" width="24" height="9" rx="2" fill="var(--p2)" opacity=".28"/>
-    <text x="432" y="93"  font-size="7" fill="var(--muted)" font-family="system-ui">Web</text>
-    <text x="410" y="106" font-size="7" fill="var(--muted)" font-family="system-ui">Email</text>
-    <text x="392" y="119" font-size="7" fill="var(--muted)" font-family="system-ui">Mobile</text>
-    <text x="378" y="132" font-size="7" fill="var(--muted)" font-family="system-ui">Búsqueda</text>
-    <text x="366" y="145" font-size="7" fill="var(--muted)" font-family="system-ui">Social</text>
-  </svg>
-  </div><!-- /max-width wrapper -->
-</div>
-
-<div class="slide" data-p="0">
-  <div class="label" style="color:var(--p1)">Agenda</div>
-  <h2>Grupo 6</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;max-width:1000px;width:100%;margin:22px 0;text-align:left">
-    <div style="background:rgba(107,91,224,.07);border:1px solid rgba(107,91,224,.22);border-radius:14px;padding:22px 22px">
-      <div style="font-size:.82rem;font-weight:700;color:var(--p1);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px">Principios de visualización</div>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:13px">
-        <li style="font-size:1.18rem;color:var(--text)"><strong>Claudio Fredes</strong><br><span style="font-size:1.02rem;color:var(--muted)">Introducción y contexto</span></li>
-        <li style="font-size:1.18rem;color:var(--text)"><strong>Guadalupe Juricich</strong><br><span style="font-size:1.02rem;color:var(--muted)">Percepción visual y Gestalt</span></li>
-      </ul>
+  <!-- SUMMARY CARDS -->
+  <div class="cards" style="margin-top:1.5rem">
+    <div class="card card-raw">
+      <h3>Datos crudos</h3>
+      <div class="val">7</div>
+      <div class="sub">archivos de fuentes originales</div>
     </div>
-    <div style="background:rgba(184,56,128,.07);border:1px solid rgba(184,56,128,.22);border-radius:14px;padding:22px 22px">
-      <div style="font-size:.82rem;font-weight:700;color:var(--p5);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px">Storytelling con datos</div>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:13px">
-        <li style="font-size:1.18rem;color:var(--text)"><strong>Ariel Abal</strong><br><span style="font-size:1.02rem;color:var(--muted)">Elección de gráficos</span></li>
-        <li style="font-size:1.18rem;color:var(--text)"><strong>Alejandra Bertrán</strong><br><span style="font-size:1.02rem;color:var(--muted)">Eliminando el caos visual</span></li>
-      </ul>
+    <div class="card card-proc">
+      <h3>Tablas procesadas</h3>
+      <div class="val">4</div>
+      <div class="sub">tablas analíticas listas para usar</div>
     </div>
-    <div style="background:rgba(201,61,61,.07);border:1px solid rgba(201,61,61,.22);border-radius:14px;padding:22px 22px">
-      <div style="font-size:.82rem;font-weight:700;color:var(--p6);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px">Diseño de dashboards</div>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:13px">
-        <li style="font-size:1.18rem;color:var(--text)"><strong>Elmer Baltazar Llusco</strong><br><span style="font-size:1.02rem;color:var(--muted)">Atributos preatentivos y diseño</span></li>
-        <li style="font-size:1.18rem;color:var(--text)"><strong>Sebastián Gines</strong><br><span style="font-size:1.02rem;color:var(--muted)">Lectura ejecutiva y Storytelling</span></li>
-      </ul>
+    <div class="card">
+      <h3>Registros totales</h3>
+      <div class="val">475k+</div>
+      <div class="sub">filas entre todos los datasets</div>
+    </div>
+    <div class="card">
+      <h3>Fuentes</h3>
+      <div class="val">4</div>
+      <div class="sub">Olympedia · UK Sport · World Bank · muhammadehsan02</div>
     </div>
   </div>
-</div>
 
-<!-- ══════════════ P1 ══════════════ -->
-<div class="slide" data-p="1">
-  <div class="label" style="color:var(--p1)">Claudio Fredes · Principios de visualización</div>
-  <h2>¿Para qué sirve un dashboard?</h2>
-  <div style="display:grid;grid-template-columns:1fr auto;gap:28px;max-width:920px;width:100%;margin:16px 0;align-items:center">
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <div style="background:rgba(107,91,224,.08);border:1px solid rgba(107,91,224,.3);border-radius:10px;padding:14px 16px">
-        <div style="font-size:1.08rem;font-weight:700;color:var(--p1)">La respuesta corta: para tomar decisiones</div>
-        <div style="font-size:1.06rem;color:var(--muted);margin-top:4px">No para acumular datos, no para demostrar que tenemos sistemas sofisticados, sino para <strong>decidir</strong>. Eso cambia todo el enfoque de diseño.</div>
-      </div>
-      <div style="background:rgba(247,106,106,.06);border:1px solid rgba(247,106,106,.3);border-radius:10px;padding:14px 16px">
-        <div style="font-size:1.08rem;font-weight:700;color:#c93d3d;margin-bottom:4px">✗ El error más frecuente: traer el océano entero</div>
-        <div style="font-size:1.06rem;color:var(--muted)">Mostrar todo lo disponible produce sobrecarga, no decisión. El público deja de procesar.</div>
-      </div>
-      <div style="background:rgba(37,150,85,.07);border:1px solid rgba(37,150,85,.3);border-radius:10px;padding:14px 16px">
-        <div style="font-size:1.08rem;font-weight:700;color:var(--p3);margin-bottom:4px">✓ El objetivo: mostrar la perla en la vitrina</div>
-        <div style="font-size:1.06rem;color:var(--muted)">Solo la información que encontraste que importa: limpia, en contexto, lista para decidir.</div>
-      </div>
-    </div>
-    <svg viewBox="0 0 200 190" width="290" height="276" style="flex-shrink:0;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.03);box-shadow:0 4px 24px rgba(107,91,224,.13)">
-      <rect x="0" y="0" width="200" height="18" rx="0" fill="rgba(107,91,224,.18)"/>
-      <circle cx="10" cy="9" r="3" fill="rgba(255,255,255,.2)"/><circle cx="20" cy="9" r="3" fill="rgba(255,255,255,.2)"/><circle cx="30" cy="9" r="3" fill="rgba(255,255,255,.2)"/>
-      <text x="115" y="13" font-size="7" fill="rgba(255,255,255,.5)" font-family="system-ui" font-weight="700" text-anchor="middle" letter-spacing=".5">DASHBOARD EJECUTIVO</text>
-      <rect x="8" y="26" width="54" height="34" rx="4" fill="rgba(107,91,224,.12)" stroke="rgba(107,91,224,.25)" stroke-width=".8"/>
-      <text x="12" y="37" font-size="6" fill="rgba(255,255,255,.45)" font-family="system-ui" font-weight="700" letter-spacing=".3">INGRESOS</text>
-      <text x="12" y="50" font-size="11" fill="#f0f2ff" font-family="system-ui" font-weight="800">$2.4M</text>
-      <text x="12" y="57" font-size="5.5" fill="#4caf7d" font-family="system-ui">▲ +12%</text>
-      <rect x="70" y="26" width="54" height="34" rx="4" fill="rgba(76,175,125,.1)" stroke="rgba(76,175,125,.25)" stroke-width=".8"/>
-      <text x="74" y="37" font-size="6" fill="rgba(255,255,255,.45)" font-family="system-ui" font-weight="700" letter-spacing=".3">NPS</text>
-      <text x="74" y="50" font-size="11" fill="#f0f2ff" font-family="system-ui" font-weight="800">72</text>
-      <text x="74" y="57" font-size="5.5" fill="#4caf7d" font-family="system-ui">▲ meta: 70</text>
-      <rect x="132" y="26" width="60" height="34" rx="4" fill="rgba(247,169,75,.1)" stroke="rgba(247,169,75,.25)" stroke-width=".8"/>
-      <text x="136" y="37" font-size="6" fill="rgba(255,255,255,.45)" font-family="system-ui" font-weight="700" letter-spacing=".3">ALERTA HOY</text>
-      <text x="136" y="50" font-size="9" fill="#f7a94b" font-family="system-ui" font-weight="800">⚡ Acción</text>
-      <text x="136" y="57" font-size="5.5" fill="rgba(255,255,255,.35)" font-family="system-ui">requerida</text>
-      <rect x="8" y="68" width="120" height="70" rx="4" fill="rgba(255,255,255,.02)" stroke="rgba(255,255,255,.07)" stroke-width=".8"/>
-      <text x="14" y="79" font-size="6" fill="rgba(255,255,255,.35)" font-family="system-ui" font-weight="700" letter-spacing=".3">TENDENCIA</text>
-      <polyline points="16,128 36,118 56,122 76,104 96,110 116,92 124,86" fill="none" stroke="#7c6af7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M16,128 36,118 56,122 76,104 96,110 116,92 124,86 124,132 16,132 Z" fill="#7c6af7" opacity=".08"/>
-      <circle cx="124" cy="86" r="2.5" fill="#7c6af7"/>
-      <line x1="12" y1="132" x2="124" y2="132" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
-      <rect x="136" y="68" width="56" height="70" rx="4" fill="rgba(255,255,255,.02)" stroke="rgba(255,255,255,.07)" stroke-width=".8"/>
-      <text x="142" y="79" font-size="6" fill="rgba(255,255,255,.35)" font-family="system-ui" font-weight="700" letter-spacing=".3">CANALES</text>
-      <rect x="142" y="84" width="40" height="8" rx="1.5" fill="#5b8af7" opacity=".9"/>
-      <rect x="142" y="96" width="30" height="8" rx="1.5" fill="#5b8af7" opacity=".7"/>
-      <rect x="142" y="108" width="22" height="8" rx="1.5" fill="#5b8af7" opacity=".5"/>
-      <rect x="142" y="120" width="14" height="8" rx="1.5" fill="#5b8af7" opacity=".35"/>
-      <rect x="8" y="146" width="184" height="36" rx="5" fill="rgba(107,91,224,.15)" stroke="rgba(107,91,224,.35)" stroke-width=".8"/>
-      <text x="100" y="160" font-size="6.5" fill="rgba(255,255,255,.5)" font-family="system-ui" font-weight="700" text-anchor="middle" letter-spacing=".5">PROPÓSITO</text>
-      <text x="100" y="174" font-size="9" fill="#f0f2ff" font-family="system-ui" font-weight="800" text-anchor="middle">Tomar decisiones → Accionar</text>
-    </svg>
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab tab-raw active" onclick="showPanel('raw',this)">📦 Datos Crudos</div>
+    <div class="tab tab-proc" onclick="showPanel('proc',this)">⚙️ Tablas Procesadas</div>
+    <div class="tab tab-schema" onclick="showPanel('schema',this)">🔗 Relaciones</div>
   </div>
-  <p class="sub" style="margin-top:4px">Knaflic, <em>Storytelling with Data</em> (2015)</p>
-</div>
 
-<div class="slide" data-p="1">
-  <div class="label" style="color:var(--p1)">Análisis exploratorio vs. aclaratorio</div>
-  <h2>De buscar perlas a mostrar perlas</h2>
-  <div class="vs-row" style="max-width:860px">
-    <div class="vs-card" style="border-color:rgba(247,106,106,.4);text-align:center">
-      <div style="font-size:.86rem;font-weight:700;color:#f76a6a;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">🔍 Exploratorio</div>
-      <svg viewBox="0 0 180 68" width="100%" style="display:block;margin-bottom:6px">
-        <circle cx="18" cy="14" r="4" fill="rgba(255,255,255,.15)"/><circle cx="34" cy="14" r="4" fill="rgba(255,255,255,.15)"/><circle cx="50" cy="14" r="4" fill="rgba(255,255,255,.15)"/><circle cx="66" cy="14" r="4" fill="rgba(255,255,255,.15)"/><circle cx="82" cy="14" r="4" fill="rgba(255,255,255,.15)"/>
-        <circle cx="18" cy="28" r="4" fill="rgba(255,255,255,.15)"/><circle cx="34" cy="28" r="4" fill="rgba(255,255,255,.15)"/><circle cx="50" cy="28" r="4" fill="rgba(255,255,255,.15)"/><circle cx="66" cy="28" r="4" fill="rgba(255,255,255,.15)"/><circle cx="82" cy="28" r="4" fill="rgba(255,255,255,.15)"/>
-        <circle cx="18" cy="42" r="4" fill="rgba(255,255,255,.15)"/><circle cx="34" cy="42" r="4" fill="rgba(255,255,255,.15)"/><circle cx="50" cy="42" r="4" fill="rgba(255,255,255,.15)"/><circle cx="66" cy="42" r="4" fill="rgba(255,255,255,.15)"/><circle cx="82" cy="42" r="4" fill="rgba(255,255,255,.15)"/>
-        <circle cx="18" cy="56" r="4" fill="rgba(255,255,255,.15)"/><circle cx="34" cy="56" r="4" fill="rgba(255,255,255,.15)"/><circle cx="50" cy="56" r="4" fill="rgba(255,255,255,.15)"/><circle cx="66" cy="56" r="4" fill="rgba(255,255,255,.15)"/><circle cx="82" cy="56" r="4" fill="rgba(255,255,255,.15)"/>
-        <circle cx="118" cy="35" r="22" fill="none" stroke="#f76a6a" stroke-width="2.5" opacity=".6"/>
-        <line x1="134" y1="51" x2="148" y2="65" stroke="#f76a6a" stroke-width="3" stroke-linecap="round" opacity=".6"/>
-        <text x="118" y="38" font-size="12" text-anchor="middle">🔍</text>
-      </svg>
-      <p style="font-size:.9rem;color:var(--dim);text-align:center;margin:0 0 8px">100 ostras abiertas…</p>
-      <p>Este trabajo es <strong>tuyo</strong>, no del público.</p>
-    </div>
-    <div class="vs-label">→</div>
-    <div class="vs-card" style="border-color:var(--p1);text-align:center">
-      <div style="font-size:.86rem;font-weight:700;color:var(--p1);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">💎 Aclaratorio</div>
-      <svg viewBox="0 0 180 64" width="100%" style="display:block;margin-bottom:6px">
-        <circle cx="65" cy="32" r="28" fill="var(--p1)" opacity=".08" stroke="var(--p1)" stroke-width="1.5"/>
-        <circle cx="65" cy="32" r="18" fill="var(--p1)" opacity=".18"/>
-        <circle cx="65" cy="32" r="9" fill="var(--p1)" opacity=".6"/>
-        <circle cx="115" cy="32" r="28" fill="var(--p1)" opacity=".08" stroke="var(--p1)" stroke-width="1.5"/>
-        <circle cx="115" cy="32" r="18" fill="var(--p1)" opacity=".18"/>
-        <circle cx="115" cy="32" r="9" fill="var(--p1)" opacity=".6"/>
-      </svg>
-      <p style="font-size:.9rem;color:var(--dim);text-align:center;margin:0 0 8px">Solo las 2 perlas que encontraste</p>
-      <p>El público ve <strong>solo lo que importa</strong>.</p>
-    </div>
-  </div>
-  <p class="sub" style="margin-top:4px">Fuente: Nussbaumer Knaflic, <em>Storytelling with Data</em> (2015)</p>
-</div>
+  <!-- PANEL: RAW -->
+  <div id="panel-raw" class="panel active">
 
-<div class="slide" data-p="1">
-  <div class="label" style="color:var(--p1)">El contexto</div>
-  <h2>El éxito comienza antes de diseñar: Quién, Qué, Cómo</h2>
-  <div style="display:grid;grid-template-columns:1fr auto;gap:24px;max-width:860px;width:100%;margin:16px 0;align-items:center">
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <div style="background:rgba(107,91,224,.08);border:1px solid rgba(107,91,224,.3);border-radius:10px;padding:14px 16px">
-        <div style="font-size:1.08rem;font-weight:700;color:var(--p1)">Quién — Audiencia específica</div>
-        <div style="font-size:1.06rem;color:var(--muted);margin-top:4px">¿Un gerente? ¿Un analista? ¿El directorio? No diseñes para "todos" — diseñá para <strong>alguien concreto</strong>.</div>
-      </div>
-      <div style="background:rgba(61,110,217,.08);border:1px solid rgba(61,110,217,.3);border-radius:10px;padding:14px 16px">
-        <div style="font-size:1.08rem;font-weight:700;color:var(--p2)">Qué — La acción esperada</div>
-        <div style="font-size:1.06rem;color:var(--muted);margin-top:4px">¿Qué necesitás que decidan o hagan? La visualización debe empujar a una <strong>acción específica</strong>.</div>
-      </div>
-      <div style="background:rgba(37,150,85,.08);border:1px solid rgba(37,150,85,.3);border-radius:10px;padding:14px 16px">
-        <div style="font-size:1.08rem;font-weight:700;color:var(--p3)">Cómo — El mecanismo</div>
-        <div style="font-size:1.06rem;color:var(--muted);margin-top:4px">¿Presentación en vivo o documento enviado? El contexto de consumo cambia el diseño radicalmente.</div>
-      </div>
-    </div>
-    <svg viewBox="0 0 220 200" width="380" height="345" style="flex-shrink:0">
-      <circle cx="110" cy="70" r="60" fill="var(--p1)" opacity=".08" stroke="var(--p1)" stroke-width="1.5"/>
-      <circle cx="84" cy="128" r="60" fill="var(--p2)" opacity=".08" stroke="var(--p2)" stroke-width="1.5"/>
-      <circle cx="136" cy="128" r="60" fill="var(--p3)" opacity=".08" stroke="var(--p3)" stroke-width="1.5"/>
-      <text x="110" y="32" font-size="11" font-weight="800" fill="var(--p1)" text-anchor="middle" font-family="system-ui">Quién</text>
-      <text x="44" y="165" font-size="11" font-weight="800" fill="var(--p2)" text-anchor="middle" font-family="system-ui">Qué</text>
-      <text x="176" y="165" font-size="11" font-weight="800" fill="var(--p3)" text-anchor="middle" font-family="system-ui">Cómo</text>
-      <text x="110" y="106" font-size="9" font-weight="800" fill="var(--text)" text-anchor="middle" font-family="system-ui">Diseño</text>
-      <text x="110" y="118" font-size="9" font-weight="800" fill="var(--text)" text-anchor="middle" font-family="system-ui">efectivo</text>
-    </svg>
-  </div>
-</div>
-
-<div class="slide" data-p="1">
-  <div class="label" style="color:var(--p1)">La Gran Idea</div>
-  <h2>Si solo tuvieras 3 minutos, ¿qué dirías?</h2>
-  <div class="analogy" style="text-align:center;font-size:1.32rem;font-weight:700;width:100%;max-width:740px;margin:16px auto;padding:26px 32px">
-    <span class="qm">"</span>
-    Una sola oración que articula el punto de vista del presentador,<br>comunica lo que está en juego, y es memorable.
-    <div style="font-size:.88rem;font-weight:400;color:var(--muted);margin-top:12px">Knaflic, <em>Storytelling with Data</em> (2015)</div>
-  </div>
-  <div class="cols2" style="max-width:740px;margin-top:10px">
-    <div style="background:rgba(247,106,106,.06);border:1px solid rgba(247,106,106,.3);border-radius:12px;padding:16px">
-      <div style="font-size:.86rem;color:#f76a6a;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">✗ Sin Gran Idea</div>
-      <div style="font-size:1.2rem;color:var(--muted);line-height:1.5">"Acá van los datos del mes."<br><span style="font-size:1.02rem">El público espera que vos concluyas.</span></div>
-    </div>
-    <div style="background:rgba(107,91,224,.06);border:1px solid var(--p1);border-radius:12px;padding:16px">
-      <div style="font-size:.86rem;color:var(--p1);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">✓ Con Gran Idea</div>
-      <div style="font-size:1.14rem;color:var(--muted);line-height:1.5">"Los reclamos subieron 40% este mes — si no reforzamos soporte antes del viernes, vamos a perder 200 clientes."<br><span style="font-size:1.02rem">El público ya sabe qué decidir.</span></div>
-    </div>
-  </div>
-  <p class="sub" style="margin-top:12px">Esto evita que dependamos de las diapositivas y centra la presentación en la <strong>acción</strong>.</p>
-</div>
-
-<!-- ══════════════ P2 ══════════════ -->
-<div class="slide" data-p="2">
-  <div class="label" style="color:var(--p2)">Guadalupe Juricich · Principios de visualización</div>
-  <h2>La Carga Cognitiva: el esfuerzo mental es limitado</h2>
-  <div style="display:grid;grid-template-columns:auto 1fr;gap:32px;max-width:820px;width:100%;margin:16px 0;align-items:center">
-    <svg viewBox="0 0 200 160" width="260" height="208" style="flex-shrink:0">
-      <ellipse cx="100" cy="72" rx="52" ry="42" fill="var(--p2)" opacity=".08" stroke="var(--p2)" stroke-width="1.5"/>
-      <text x="100" y="82" font-size="36" text-anchor="middle" font-family="system-ui">🧠</text>
-      <rect x="55" y="112" width="90" height="8" rx="2" fill="var(--p2)" opacity=".4"/>
-      <rect x="44" y="107" width="14" height="18" rx="3" fill="var(--p2)" opacity=".6"/>
-      <rect x="142" y="107" width="14" height="18" rx="3" fill="var(--p2)" opacity=".6"/>
-      <rect x="32" y="103" width="14" height="26" rx="3" fill="var(--p2)" opacity=".8"/>
-      <rect x="154" y="103" width="14" height="26" rx="3" fill="var(--p2)" opacity=".8"/>
-      <text x="100" y="152" font-size="10" fill="rgba(255,255,255,.4)" text-anchor="middle" font-family="system-ui">carga cognitiva excesiva</text>
-    </svg>
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <div style="background:rgba(61,110,217,.08);border:1px solid rgba(61,110,217,.25);border-radius:10px;padding:13px 15px">
-        <div style="font-size:1.08rem;font-weight:700;color:var(--p2)">Memoria a corto plazo: ~4 elementos</div>
-        <div style="font-size:1.06rem;color:var(--muted);margin-top:4px">Cada elemento visual consume un slot. Más de 5–7 KPIs visibles genera sobrecarga. El público deja de procesar.</div>
-      </div>
-      <div style="background:rgba(61,110,217,.08);border:1px solid rgba(61,110,217,.25);border-radius:10px;padding:13px 15px">
-        <div style="font-size:1.08rem;font-weight:700;color:var(--p2)">Proporción datos-tinta (Tufte)</div>
-        <div style="font-size:1.06rem;color:var(--muted);margin-top:4px">Todo lo que no comunique datos es ruido. El ruido cuesta esfuerzo mental. Eliminar ruido = regalar atención al mensaje.</div>
-      </div>
-      <p style="font-size:.96rem;color:var(--dim)">Tufte, <em>The Visual Display of Quantitative Information</em> (2001) · Miller (1956)</p>
-    </div>
-  </div>
-</div>
-
-<div class="slide" data-p="2">
-  <div class="label" style="color:var(--p2)">Principios de la Gestalt · I</div>
-  <h2>Cómo vemos el orden: Proximidad y Semejanza</h2>
-  <div class="cols2" style="max-width:860px">
-    <div class="col2-card">
-      <h3 style="color:var(--p2)">Proximidad</h3>
-      <p>Percibimos como grupo los elementos que están cerca entre sí — sin necesitar bordes ni etiquetas.</p>
-      <!-- circles only, no tiny SVG text -->
-      <svg viewBox="0 0 200 46" width="100%" style="display:block;margin-top:16px">
-        <circle cx="20" cy="14" r="6" fill="var(--p2)" opacity=".7"/><circle cx="38" cy="14" r="6" fill="var(--p2)" opacity=".7"/>
-        <circle cx="20" cy="32" r="6" fill="var(--p2)" opacity=".7"/><circle cx="38" cy="32" r="6" fill="var(--p2)" opacity=".7"/>
-        <circle cx="92" cy="14" r="6" fill="var(--p2)" opacity=".7"/><circle cx="110" cy="14" r="6" fill="var(--p2)" opacity=".7"/>
-        <circle cx="92" cy="32" r="6" fill="var(--p2)" opacity=".7"/><circle cx="110" cy="32" r="6" fill="var(--p2)" opacity=".7"/>
-        <circle cx="162" cy="14" r="6" fill="var(--p2)" opacity=".7"/><circle cx="180" cy="14" r="6" fill="var(--p2)" opacity=".7"/>
-        <circle cx="162" cy="32" r="6" fill="var(--p2)" opacity=".7"/><circle cx="180" cy="32" r="6" fill="var(--p2)" opacity=".7"/>
-      </svg>
-      <!-- labels as HTML -->
-      <div style="display:flex;justify-content:space-around;font-size:.88rem;color:var(--dim);margin-top:6px">
-        <span>Grupo 1</span><span>Grupo 2</span><span>Grupo 3</span>
-      </div>
-      <p style="font-size:.92rem;color:var(--dim);text-align:center;margin-top:8px">El espacio crea grupos sin bordes</p>
-    </div>
-    <div class="col2-card">
-      <h3 style="color:var(--p2)">Semejanza</h3>
-      <p>Percibimos como categoría los elementos del mismo color, forma o tamaño — el color crea filas sin texto.</p>
-      <!-- circles only -->
-      <svg viewBox="0 0 200 46" width="100%" style="display:block;margin-top:16px">
-        <circle cx="14" cy="14" r="6" fill="var(--p2)"/><circle cx="40" cy="14" r="6" fill="rgba(0,0,0,.12)"/><circle cx="66" cy="14" r="6" fill="var(--p2)"/><circle cx="92" cy="14" r="6" fill="rgba(0,0,0,.12)"/><circle cx="118" cy="14" r="6" fill="var(--p2)"/><circle cx="144" cy="14" r="6" fill="rgba(0,0,0,.12)"/><circle cx="170" cy="14" r="6" fill="var(--p2)"/><circle cx="196" cy="14" r="6" fill="rgba(0,0,0,.12)"/>
-        <circle cx="14" cy="34" r="6" fill="rgba(0,0,0,.12)"/><circle cx="40" cy="34" r="6" fill="var(--p2)"/><circle cx="66" cy="34" r="6" fill="rgba(0,0,0,.12)"/><circle cx="92" cy="34" r="6" fill="var(--p2)"/><circle cx="118" cy="34" r="6" fill="rgba(0,0,0,.12)"/><circle cx="144" cy="34" r="6" fill="var(--p2)"/><circle cx="170" cy="34" r="6" fill="rgba(0,0,0,.12)"/><circle cx="196" cy="34" r="6" fill="var(--p2)"/>
-      </svg>
-      <!-- captions as HTML -->
-      <p style="font-size:.92rem;color:var(--dim);text-align:center;margin-top:10px">Mismo color → mismo grupo <em>(sin etiquetas)</em></p>
-      <p style="font-size:.88rem;color:var(--dim);text-align:center;margin-top:4px">Las leyes de Gestalt operan inconscientemente</p>
-    </div>
-  </div>
-</div>
-
-<div class="slide" data-p="2">
-  <div class="label" style="color:var(--p2)">Principios de la Gestalt · II</div>
-  <h2>Cierre: La mente completa lo incompleto</h2>
-  <p class="sub" style="max-width:720px;margin-bottom:12px;font-size:1.18rem">Un fondo suave basta para delimitar secciones — los bordes explícitos son ruido, no estructura.</p>
-  <div class="cols2" style="max-width:820px">
-
-    <!-- ✗ BAD -->
-    <div style="background:var(--card-bg);border:1px solid rgba(247,106,106,.35);border-radius:13px;padding:16px;display:flex;flex-direction:column;gap:10px">
-      <div style="font-size:.86rem;color:#f76a6a;font-weight:700;text-transform:uppercase;letter-spacing:.8px">✗ Con bordes explícitos</div>
-      <svg viewBox="0 0 200 130" width="100%" style="display:block">
-        <!-- outer heavy border (thick) -->
-        <rect x="1" y="1" width="198" height="128" rx="2" fill="rgba(255,255,255,.02)" stroke="rgba(255,255,255,.7)" stroke-width="2.5"/>
-        <!-- title header with filled background + thick bottom border -->
-        <rect x="1" y="1" width="198" height="17" rx="2" fill="rgba(255,255,255,.08)"/>
-        <line x1="1" y1="17" x2="199" y2="17" stroke="rgba(255,255,255,.65)" stroke-width="1.5"/>
-        <text x="10" y="12" font-size="6.5" fill="rgba(255,255,255,.75)" font-family="system-ui" font-weight="700" letter-spacing=".3">VENTAS MENSUALES</text>
-        <!-- KPI strip con cajas (ruido extra) -->
-        <rect x="1" y="17" width="198" height="17" fill="rgba(255,255,255,.04)"/>
-        <line x1="1" y1="34" x2="199" y2="34" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
-        <rect x="5" y="19" width="56" height="13" rx="1.5" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.4)" stroke-width=".8"/>
-        <text x="8" y="24" font-size="4" fill="rgba(255,255,255,.5)" font-family="system-ui">CLIENTES ACTIVOS</text>
-        <text x="8" y="30" font-size="6.5" fill="rgba(255,255,255,.75)" font-family="system-ui" font-weight="700">1.240</text>
-        <rect x="66" y="19" width="56" height="13" rx="1.5" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.4)" stroke-width=".8"/>
-        <text x="69" y="24" font-size="4" fill="rgba(255,255,255,.5)" font-family="system-ui">Ventas totales</text>
-        <text x="69" y="30" font-size="6.5" fill="rgba(255,255,255,.75)" font-family="system-ui" font-weight="700">$91.000</text>
-        <!-- legend box (extra ruido) -->
-        <rect x="148" y="19" width="48" height="13" rx="1.5" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.45)" stroke-width=".8"/>
-        <rect x="151" y="22" width="7" height="7" rx="1" fill="var(--p2)" opacity=".5"/>
-        <text x="161" y="29" font-size="5" fill="rgba(255,255,255,.5)" font-family="system-ui">Serie 1</text>
-        <!-- Y axis labels (cada 5 unidades — más etiquetas) -->
-        <text x="23" y="39" font-size="5" fill="rgba(255,255,255,.55)" font-family="system-ui" text-anchor="end">30</text>
-        <text x="23" y="52" font-size="5" fill="rgba(255,255,255,.55)" font-family="system-ui" text-anchor="end">25</text>
-        <text x="23" y="65" font-size="5" fill="rgba(255,255,255,.55)" font-family="system-ui" text-anchor="end">20</text>
-        <text x="23" y="78" font-size="5" fill="rgba(255,255,255,.55)" font-family="system-ui" text-anchor="end">15</text>
-        <text x="23" y="90" font-size="5" fill="rgba(255,255,255,.55)" font-family="system-ui" text-anchor="end">10</text>
-        <text x="23" y="103" font-size="5" fill="rgba(255,255,255,.55)" font-family="system-ui" text-anchor="end">5</text>
-        <text x="23" y="116" font-size="5" fill="rgba(255,255,255,.55)" font-family="system-ui" text-anchor="end">0</text>
-        <!-- Y axis + tick marks -->
-        <line x1="26" y1="36" x2="26" y2="113" stroke="rgba(255,255,255,.6)" stroke-width="1.2"/>
-        <line x1="23" y1="36" x2="26" y2="36" stroke="rgba(255,255,255,.55)" stroke-width="1"/>
-        <line x1="23" y1="49" x2="26" y2="49" stroke="rgba(255,255,255,.55)" stroke-width="1"/>
-        <line x1="23" y1="62" x2="26" y2="62" stroke="rgba(255,255,255,.55)" stroke-width="1"/>
-        <line x1="23" y1="75" x2="26" y2="75" stroke="rgba(255,255,255,.55)" stroke-width="1"/>
-        <line x1="23" y1="87" x2="26" y2="87" stroke="rgba(255,255,255,.55)" stroke-width="1"/>
-        <line x1="23" y1="100" x2="26" y2="100" stroke="rgba(255,255,255,.55)" stroke-width="1"/>
-        <!-- X axis + tick marks -->
-        <line x1="26" y1="113" x2="198" y2="113" stroke="rgba(255,255,255,.6)" stroke-width="1.2"/>
-        <line x1="53" y1="113" x2="53" y2="116" stroke="rgba(255,255,255,.55)" stroke-width="1"/>
-        <line x1="92" y1="113" x2="92" y2="116" stroke="rgba(255,255,255,.55)" stroke-width="1"/>
-        <line x1="131" y1="113" x2="131" y2="116" stroke="rgba(255,255,255,.55)" stroke-width="1"/>
-        <line x1="170" y1="113" x2="170" y2="116" stroke="rgba(255,255,255,.55)" stroke-width="1"/>
-        <!-- dense horizontal grid lines (cada 5 unidades) -->
-        <line x1="26" y1="36" x2="198" y2="36" stroke="rgba(255,255,255,.32)" stroke-width=".9"/>
-        <line x1="26" y1="49" x2="198" y2="49" stroke="rgba(255,255,255,.32)" stroke-width=".9"/>
-        <line x1="26" y1="62" x2="198" y2="62" stroke="rgba(255,255,255,.32)" stroke-width=".9"/>
-        <line x1="26" y1="75" x2="198" y2="75" stroke="rgba(255,255,255,.32)" stroke-width=".9"/>
-        <line x1="26" y1="87" x2="198" y2="87" stroke="rgba(255,255,255,.32)" stroke-width=".9"/>
-        <line x1="26" y1="100" x2="198" y2="100" stroke="rgba(255,255,255,.32)" stroke-width=".9"/>
-        <!-- vertical grid lines (también entre barras) -->
-        <line x1="73" y1="36" x2="73" y2="113" stroke="rgba(255,255,255,.28)" stroke-width="1"/>
-        <line x1="112" y1="36" x2="112" y2="113" stroke="rgba(255,255,255,.28)" stroke-width="1"/>
-        <line x1="151" y1="36" x2="151" y2="113" stroke="rgba(255,255,255,.28)" stroke-width="1"/>
-        <!-- bars (low opacity — compiten con la cuadrícula) -->
-        <rect x="41" y="56" width="24" height="57" rx="1" fill="var(--p2)" opacity=".4"/>
-        <rect x="80" y="41" width="24" height="72" rx="1" fill="var(--p2)" opacity=".4"/>
-        <rect x="119" y="69" width="24" height="44" rx="1" fill="var(--p2)" opacity=".4"/>
-        <rect x="158" y="51" width="24" height="62" rx="1" fill="var(--p2)" opacity=".4"/>
-        <!-- data labels sobre cada barra (más ruido) -->
-        <text x="53" y="53" font-size="5.5" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle" font-weight="700">22</text>
-        <text x="92" y="38" font-size="5.5" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle" font-weight="700">28</text>
-        <text x="131" y="66" font-size="5.5" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle" font-weight="700">17</text>
-        <text x="170" y="48" font-size="5.5" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle" font-weight="700">24</text>
-        <!-- X axis labels -->
-        <text x="53" y="123" font-size="6" fill="rgba(255,255,255,.5)" font-family="system-ui" text-anchor="middle">Ene</text>
-        <text x="92" y="123" font-size="6" fill="rgba(255,255,255,.5)" font-family="system-ui" text-anchor="middle">Feb</text>
-        <text x="131" y="123" font-size="6" fill="rgba(255,255,255,.5)" font-family="system-ui" text-anchor="middle">Mar</text>
-        <text x="170" y="123" font-size="6" fill="rgba(255,255,255,.5)" font-family="system-ui" text-anchor="middle">Abr</text>
-      </svg>
-      <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px">
-        <li style="display:flex;gap:7px;font-size:.95rem;color:var(--muted);line-height:1.35"><span style="color:#f76a6a;font-weight:700;flex-shrink:0">✗</span><span>Borde pesado enmarca todo el panel</span></li>
-        <li style="display:flex;gap:7px;font-size:.95rem;color:var(--muted);line-height:1.35"><span style="color:#f76a6a;font-weight:700;flex-shrink:0">✗</span><span>Cuadrícula densa: horizontal y vertical</span></li>
-        <li style="display:flex;gap:7px;font-size:.95rem;color:var(--muted);line-height:1.35"><span style="color:#f76a6a;font-weight:700;flex-shrink:0">✗</span><span>Todos los elementos con el mismo peso visual</span></li>
-        <li style="display:flex;gap:7px;font-size:.95rem;color:var(--muted);line-height:1.35"><span style="color:#f76a6a;font-weight:700;flex-shrink:0">✗</span><span>El ojo no sabe dónde enfocarse</span></li>
-      </ul>
-    </div>
-
-    <!-- ✓ GOOD -->
-    <div style="background:var(--card-bg);border:1px solid rgba(61,110,217,.35);border-radius:13px;padding:16px;display:flex;flex-direction:column;gap:10px">
-      <div style="font-size:.86rem;color:var(--p2);font-weight:700;text-transform:uppercase;letter-spacing:.8px">✓ Con fondos implícitos</div>
-      <svg viewBox="0 0 200 142" width="100%" style="display:block">
-        <!-- KPI card 1 -->
-        <rect x="1" y="2" width="97" height="24" rx="3" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.14)" stroke-width=".7"/>
-        <text x="7" y="14" font-size="9.5" fill="rgba(255,255,255,.88)" font-family="system-ui" font-weight="700">1.240</text>
-        <text x="7" y="23" font-size="6" fill="rgba(255,255,255,.48)" font-family="system-ui">Clientes activos</text>
-        <!-- KPI card 2 -->
-        <rect x="102" y="2" width="97" height="24" rx="3" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.14)" stroke-width=".7"/>
-        <text x="108" y="14" font-size="9.5" fill="rgba(255,255,255,.88)" font-family="system-ui" font-weight="700">$91K</text>
-        <text x="108" y="23" font-size="6" fill="rgba(255,255,255,.48)" font-family="system-ui">Ventas totales</text>
-        <!-- Chart card: margen a margen, mismo estilo que los KPI -->
-        <rect x="1" y="29" width="198" height="111" rx="3" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.14)" stroke-width=".7"/>
-        <!-- inner chart background -->
-        <rect x="28" y="33" width="170" height="84" rx="2" fill="rgba(255,255,255,.02)"/>
-        <!-- Y axis labels -->
-        <text x="25" y="37" font-size="5.5" fill="rgba(255,255,255,.45)" font-family="system-ui" text-anchor="end">30</text>
-        <text x="25" y="64" font-size="5.5" fill="rgba(255,255,255,.45)" font-family="system-ui" text-anchor="end">20</text>
-        <text x="25" y="92" font-size="5.5" fill="rgba(255,255,255,.45)" font-family="system-ui" text-anchor="end">10</text>
-        <text x="25" y="120" font-size="5.5" fill="rgba(255,255,255,.45)" font-family="system-ui" text-anchor="end">0</text>
-        <!-- Y axis -->
-        <line x1="28" y1="33" x2="28" y2="117" stroke="var(--dim)" stroke-width=".8"/>
-        <!-- X axis -->
-        <line x1="28" y1="117" x2="198" y2="117" stroke="var(--dim)" stroke-width=".8"/>
-        <!-- faint guides at 20 y 10 -->
-        <line x1="28" y1="61" x2="198" y2="61" stroke="var(--border)" stroke-width=".7"/>
-        <line x1="28" y1="89" x2="198" y2="89" stroke="var(--border)" stroke-width=".7"/>
-        <!-- bars -->
-        <rect x="41" y="55" width="24" height="62" rx="1.5" fill="var(--p2)" opacity=".85"/>
-        <rect x="80" y="39" width="24" height="78" rx="1.5" fill="var(--p2)" opacity=".85"/>
-        <rect x="119" y="69" width="24" height="48" rx="1.5" fill="var(--p2)" opacity=".85"/>
-        <rect x="158" y="50" width="24" height="67" rx="1.5" fill="var(--p2)" opacity=".85"/>
-        <!-- X axis labels -->
-        <text x="53" y="126" font-size="6" fill="rgba(255,255,255,.4)" font-family="system-ui" text-anchor="middle">Ene</text>
-        <text x="92" y="126" font-size="6" fill="rgba(255,255,255,.4)" font-family="system-ui" text-anchor="middle">Feb</text>
-        <text x="131" y="126" font-size="6" fill="rgba(255,255,255,.4)" font-family="system-ui" text-anchor="middle">Mar</text>
-        <text x="170" y="126" font-size="6" fill="rgba(255,255,255,.4)" font-family="system-ui" text-anchor="middle">Abr</text>
-        <!-- chart label al pie, mismo estilo que etiquetas KPI -->
-        <text x="7" y="136" font-size="6" fill="rgba(255,255,255,.48)" font-family="system-ui">Ventas mensuales</text>
-      </svg>
-      <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px">
-        <li style="display:flex;gap:7px;font-size:.95rem;color:var(--muted);line-height:1.35"><span style="color:var(--p3);font-weight:700;flex-shrink:0">✓</span><span>Sin borde: fondo suave delimita el área</span></li>
-        <li style="display:flex;gap:7px;font-size:.95rem;color:var(--muted);line-height:1.35"><span style="color:var(--p3);font-weight:700;flex-shrink:0">✓</span><span>Solo guías horizontales mínimas</span></li>
-        <li style="display:flex;gap:7px;font-size:.95rem;color:var(--muted);line-height:1.35"><span style="color:var(--p3);font-weight:700;flex-shrink:0">✓</span><span>Ejes simples: el dato tiene protagonismo</span></li>
-        <li style="display:flex;gap:7px;font-size:.95rem;color:var(--muted);line-height:1.35"><span style="color:var(--p3);font-weight:700;flex-shrink:0">✓</span><span>La mente cierra el grupo sola</span></li>
-      </ul>
-    </div>
-
-  </div>
-</div>
-
-<div class="slide" data-p="2">
-  <div class="label" style="color:var(--p2)">Principios de la Gestalt · III</div>
-  <h2 style="text-align:center">Conectividad: La línea une más que el color</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;max-width:820px;width:100%;margin:16px 0;align-items:start">
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <p style="font-size:1.14rem;color:var(--muted)">Los elementos <strong>conectados físicamente</strong> se agrupan más fuerte que los del mismo color o tamaño. Una línea entre dos puntos los convierte en una relación.</p>
-      <div style="background:rgba(61,110,217,.07);border:1px solid rgba(61,110,217,.2);border-radius:10px;padding:13px 15px">
-        <div style="font-size:1.08rem;font-weight:700;color:var(--p2);margin-bottom:4px">Por qué los line charts son tan efectivos</div>
-        <div style="font-size:1.06rem;color:var(--muted)">La línea activa la conectividad. El ojo sigue la tendencia <em>instantáneamente</em> — sin esfuerzo consciente.</div>
-      </div>
-      <div style="background:rgba(61,110,217,.07);border:1px solid rgba(61,110,217,.2);border-radius:10px;padding:13px 15px">
-        <div style="font-size:1.08rem;font-weight:700;color:var(--p2);margin-bottom:4px">Jerarquía de agrupación Gestalt</div>
-        <div style="font-size:1.06rem;color:var(--muted)">Conectividad &gt; Cierre &gt; Proximidad &gt; Semejanza. <strong>La línea siempre gana al color.</strong></div>
-      </div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:6px">
-      <p style="font-size:.88rem;color:var(--dim);text-align:center;margin:0">Puntos sin conexión → orden no obvio</p>
-      <svg viewBox="0 0 200 112" width="100%" style="display:block">
-        <circle cx="16" cy="32" r="5" fill="rgba(0,0,0,.18)"/><circle cx="52" cy="22" r="5" fill="rgba(0,0,0,.18)"/><circle cx="88" cy="38" r="5" fill="rgba(0,0,0,.18)"/><circle cx="124" cy="16" r="5" fill="rgba(0,0,0,.18)"/><circle cx="160" cy="30" r="5" fill="rgba(0,0,0,.18)"/>
-        <polyline points="16,95 52,80 88,106 124,68 160,88 184,62" fill="none" stroke="var(--p2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
-        <circle cx="16" cy="95" r="4" fill="var(--p2)"/><circle cx="52" cy="80" r="4" fill="var(--p2)"/><circle cx="88" cy="106" r="4" fill="var(--p2)"/><circle cx="124" cy="68" r="4" fill="var(--p2)"/><circle cx="160" cy="88" r="4" fill="var(--p2)"/>
-      </svg>
-      <p style="font-size:.9rem;color:var(--p2);text-align:center;margin:0;font-weight:700">Conectados → tendencia instantánea</p>
-      <p style="font-size:.84rem;color:var(--dim);text-align:center;margin:0">La ley de conectividad explica el poder del line chart</p>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════ P3 ══════════════ -->
-<div class="slide" data-p="3">
-  <div class="label" style="color:var(--p3)">Ariel Abal · Storytelling con datos</div>
-  <h2>Cuando tenés 1 o 2 cifras, solo mostrá el número</h2>
-  <div class="vs-row" style="max-width:820px;margin:20px 0;align-items:stretch">
-    <div class="vs-card" style="text-align:center;padding:28px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
-      <div style="font-size:1rem;font-weight:700;color:#c93d3d;text-transform:uppercase;letter-spacing:.8px">✗ Donut chart</div>
-      <svg viewBox="0 0 160 120" width="180" height="135" style="display:block">
-        <circle cx="80" cy="60" r="42" fill="none" stroke="rgba(0,0,0,.08)" stroke-width="24"/>
-        <circle cx="80" cy="60" r="42" fill="none" stroke="var(--p3)" stroke-width="24" stroke-dasharray="238 48" stroke-dashoffset="65" opacity=".55"/>
-        <text x="80" y="66" font-size="18" font-weight="900" fill="var(--p3)" text-anchor="middle" font-family="system-ui">91%</text>
-      </svg>
-      <div style="font-size:.88rem;color:var(--muted)">3 pasos cognitivos: decodificar el arco → encontrar el número → buscar el contexto</div>
-    </div>
-    <div class="vs-label" style="font-size:1.92rem">→</div>
-    <div class="vs-card" style="text-align:center;border-color:var(--p3);padding:28px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
-      <div style="font-size:1rem;font-weight:700;color:var(--p3);text-transform:uppercase;letter-spacing:.8px">✓ Texto simple</div>
-      <div style="font-size:6rem;font-weight:900;line-height:1;letter-spacing:-3px;color:var(--p3);margin:6px 0">91%</div>
-      <div style="font-size:1.18rem;color:var(--muted)">de clientes satisfechos</div>
-      <div style="font-size:.88rem;color:var(--dim)">1 paso cognitivo: leer el número</div>
-    </div>
-  </div>
-  <div style="background:rgba(37,150,85,.06);border:1px solid rgba(37,150,85,.18);border-radius:9px;padding:11px 18px;max-width:820px;width:100%">
-    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px">
-      <li style="display:flex;gap:7px;font-size:.95rem;color:var(--muted)"><span style="color:var(--p3);font-weight:700;flex-shrink:0">✓</span>Un dato, un vistazo — sin decodificación</li>
-      <li style="display:flex;gap:7px;font-size:.95rem;color:var(--muted)"><span style="color:var(--p3);font-weight:700;flex-shrink:0">✓</span>La fuente grande es la visualización</li>
-      <li style="display:flex;gap:7px;font-size:.95rem;color:var(--muted)"><span style="color:var(--p3);font-weight:700;flex-shrink:0">✓</span>El contexto va en texto, no en leyendas</li>
-    </ul>
-  </div>
-</div>
-
-<div class="slide" data-p="3">
-  <div class="label" style="color:var(--p3)">Ariel Abal · Storytelling con datos</div>
-  <h2>Para datos cruzados: la tabla con jerarquía visual</h2>
-  <p class="sub" style="max-width:720px;margin-bottom:16px">El color indica la magnitud — el ojo detecta el patrón antes de leer un solo número.</p>
-  <div class="vs-row" style="max-width:820px;margin:0;align-items:stretch">
-    <div class="vs-card" style="padding:22px 20px;display:flex;flex-direction:column;align-items:center;gap:12px">
-      <div style="font-size:1rem;font-weight:700;color:#c93d3d;text-transform:uppercase;letter-spacing:.8px">✗ Tabla plana</div>
-      <svg viewBox="0 0 200 100" width="100%" style="display:block;max-width:320px">
-        <rect x="0" y="0" width="200" height="20" fill="rgba(255,255,255,.05)"/>
-        <text x="58" y="14" font-size="8" fill="rgba(255,255,255,.45)" font-family="system-ui" text-anchor="middle">Ene</text>
-        <text x="96" y="14" font-size="8" fill="rgba(255,255,255,.45)" font-family="system-ui" text-anchor="middle">Feb</text>
-        <text x="134" y="14" font-size="8" fill="rgba(255,255,255,.45)" font-family="system-ui" text-anchor="middle">Mar</text>
-        <text x="172" y="14" font-size="8" fill="rgba(255,255,255,.45)" font-family="system-ui" text-anchor="middle">Abr</text>
-        <line x1="0" y1="20" x2="200" y2="20" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
-        <line x1="0" y1="46" x2="200" y2="46" stroke="rgba(255,255,255,.07)" stroke-width=".6"/>
-        <line x1="0" y1="72" x2="200" y2="72" stroke="rgba(255,255,255,.07)" stroke-width=".6"/>
-        <line x1="38" y1="0" x2="38" y2="100" stroke="rgba(255,255,255,.1)" stroke-width=".8"/>
-        <line x1="76" y1="20" x2="76" y2="100" stroke="rgba(255,255,255,.06)" stroke-width=".5"/>
-        <line x1="114" y1="20" x2="114" y2="100" stroke="rgba(255,255,255,.06)" stroke-width=".5"/>
-        <line x1="152" y1="20" x2="152" y2="100" stroke="rgba(255,255,255,.06)" stroke-width=".5"/>
-        <text x="19" y="37" font-size="8" fill="rgba(255,255,255,.5)" font-family="system-ui" text-anchor="middle">Norte</text>
-        <text x="58" y="37" font-size="9" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle">82</text>
-        <text x="96" y="37" font-size="9" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle">91</text>
-        <text x="134" y="37" font-size="9" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle">67</text>
-        <text x="172" y="37" font-size="9" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle">95</text>
-        <text x="19" y="63" font-size="8" fill="rgba(255,255,255,.5)" font-family="system-ui" text-anchor="middle">Centro</text>
-        <text x="58" y="63" font-size="9" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle">45</text>
-        <text x="96" y="63" font-size="9" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle">38</text>
-        <text x="134" y="63" font-size="9" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle">72</text>
-        <text x="172" y="63" font-size="9" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle">51</text>
-        <text x="19" y="89" font-size="8" fill="rgba(255,255,255,.5)" font-family="system-ui" text-anchor="middle">Sur</text>
-        <text x="58" y="89" font-size="9" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle">93</text>
-        <text x="96" y="89" font-size="9" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle">71</text>
-        <text x="134" y="89" font-size="9" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle">84</text>
-        <text x="172" y="89" font-size="9" fill="rgba(255,255,255,.65)" font-family="system-ui" text-anchor="middle">62</text>
-      </svg>
-      <div style="font-size:.88rem;color:var(--muted);text-align:center">Todos los valores lucen igual — el ojo no encuentra el patrón</div>
-    </div>
-    <div class="vs-label" style="font-size:1.92rem">→</div>
-    <div class="vs-card" style="border-color:var(--p3);padding:22px 20px;display:flex;flex-direction:column;align-items:center;gap:12px">
-      <div style="font-size:1rem;font-weight:700;color:var(--p3);text-transform:uppercase;letter-spacing:.8px">✓ Mapa de calor</div>
-      <svg viewBox="0 0 200 100" width="100%" style="display:block;max-width:320px">
-        <rect x="0" y="0" width="200" height="20" fill="rgba(255,255,255,.05)"/>
-        <text x="58" y="14" font-size="8" fill="rgba(255,255,255,.45)" font-family="system-ui" text-anchor="middle">Ene</text>
-        <text x="96" y="14" font-size="8" fill="rgba(255,255,255,.45)" font-family="system-ui" text-anchor="middle">Feb</text>
-        <text x="134" y="14" font-size="8" fill="rgba(255,255,255,.45)" font-family="system-ui" text-anchor="middle">Mar</text>
-        <text x="172" y="14" font-size="8" fill="rgba(255,255,255,.45)" font-family="system-ui" text-anchor="middle">Abr</text>
-        <line x1="38" y1="0" x2="38" y2="100" stroke="rgba(255,255,255,.1)" stroke-width=".8"/>
-        <line x1="0" y1="20" x2="200" y2="20" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
-        <rect x="38" y="20" width="38" height="26" fill="var(--p3)" fill-opacity=".48"/>
-        <rect x="76" y="20" width="38" height="26" fill="var(--p3)" fill-opacity=".56"/>
-        <rect x="114" y="20" width="38" height="26" fill="var(--p3)" fill-opacity=".34"/>
-        <rect x="152" y="20" width="48" height="26" fill="var(--p3)" fill-opacity=".60"/>
-        <rect x="38" y="46" width="38" height="26" fill="var(--p3)" fill-opacity=".14"/>
-        <rect x="76" y="46" width="38" height="26" fill="var(--p3)" fill-opacity=".08"/>
-        <rect x="114" y="46" width="38" height="26" fill="var(--p3)" fill-opacity=".39"/>
-        <rect x="152" y="46" width="48" height="26" fill="var(--p3)" fill-opacity=".20"/>
-        <rect x="38" y="72" width="38" height="28" fill="var(--p3)" fill-opacity=".58"/>
-        <rect x="76" y="72" width="38" height="28" fill="var(--p3)" fill-opacity=".38"/>
-        <rect x="114" y="72" width="38" height="28" fill="var(--p3)" fill-opacity=".50"/>
-        <rect x="152" y="72" width="48" height="28" fill="var(--p3)" fill-opacity=".30"/>
-        <text x="19" y="37" font-size="8" fill="rgba(255,255,255,.5)" font-family="system-ui" text-anchor="middle">Norte</text>
-        <text x="19" y="63" font-size="8" fill="rgba(255,255,255,.5)" font-family="system-ui" text-anchor="middle">Centro</text>
-        <text x="19" y="89" font-size="8" fill="rgba(255,255,255,.5)" font-family="system-ui" text-anchor="middle">Sur</text>
-        <text x="58" y="37" font-size="9" fill="rgba(255,255,255,.92)" font-family="system-ui" text-anchor="middle" font-weight="700">82</text>
-        <text x="96" y="37" font-size="9" fill="rgba(255,255,255,.92)" font-family="system-ui" text-anchor="middle" font-weight="700">91</text>
-        <text x="134" y="37" font-size="9" fill="rgba(255,255,255,.92)" font-family="system-ui" text-anchor="middle" font-weight="700">67</text>
-        <text x="172" y="37" font-size="9" fill="rgba(255,255,255,.92)" font-family="system-ui" text-anchor="middle" font-weight="700">95</text>
-        <text x="58" y="63" font-size="9" fill="rgba(255,255,255,.92)" font-family="system-ui" text-anchor="middle" font-weight="700">45</text>
-        <text x="96" y="63" font-size="9" fill="rgba(255,255,255,.92)" font-family="system-ui" text-anchor="middle" font-weight="700">38</text>
-        <text x="134" y="63" font-size="9" fill="rgba(255,255,255,.92)" font-family="system-ui" text-anchor="middle" font-weight="700">72</text>
-        <text x="172" y="63" font-size="9" fill="rgba(255,255,255,.92)" font-family="system-ui" text-anchor="middle" font-weight="700">51</text>
-        <text x="58" y="89" font-size="9" fill="rgba(255,255,255,.92)" font-family="system-ui" text-anchor="middle" font-weight="700">93</text>
-        <text x="96" y="89" font-size="9" fill="rgba(255,255,255,.92)" font-family="system-ui" text-anchor="middle" font-weight="700">71</text>
-        <text x="134" y="89" font-size="9" fill="rgba(255,255,255,.92)" font-family="system-ui" text-anchor="middle" font-weight="700">84</text>
-        <text x="172" y="89" font-size="9" fill="rgba(255,255,255,.92)" font-family="system-ui" text-anchor="middle" font-weight="700">62</text>
-      </svg>
-      <div style="font-size:.88rem;color:var(--muted);text-align:center">El patrón se lee en un vistazo — Sur lidera en Ene, Centro es bajo en Feb</div>
-    </div>
-  </div>
-  <div style="background:rgba(37,150,85,.06);border:1px solid rgba(37,150,85,.18);border-radius:9px;padding:11px 18px;max-width:820px;width:100%;margin-top:14px">
-    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px">
-      <li style="display:flex;gap:7px;font-size:.95rem;color:var(--muted)"><span style="color:var(--p3);font-weight:700;flex-shrink:0">✓</span>El color detecta el patrón antes que el número</li>
-      <li style="display:flex;gap:7px;font-size:.95rem;color:var(--muted)"><span style="color:var(--p3);font-weight:700;flex-shrink:0">✓</span>Reemplaza múltiples gráficos con un solo panel</li>
-      <li style="display:flex;gap:7px;font-size:.95rem;color:var(--muted)"><span style="color:var(--p3);font-weight:700;flex-shrink:0">✓</span>La tabla no es el enemigo — la falta de jerarquía sí</li>
-    </ul>
-  </div>
-</div>
-
-<div class="slide" data-p="3">
-  <div class="label" style="color:var(--p3)">Tendencias y relaciones</div>
-  <h2>Puntos y Líneas: conectando el tiempo y las relaciones</h2>
-  <div class="cols2" style="max-width:860px">
-    <div class="col2-card">
-      <h3 style="color:var(--p3)">Gráfico de líneas</h3>
-      <p style="font-size:.9rem">El rey de los datos continuos en el tiempo. Tendencias, proyecciones, ciclos.</p>
-      <svg viewBox="0 0 200 90" width="100%" style="display:block;margin-top:10px">
-        <polyline points="10,75 38,62 66,56 94,68 122,40 150,48 178,32 198,24" fill="none" stroke="var(--p3)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M10,75 38,62 66,56 94,68 122,40 150,48 178,32 198,24 198,84 10,84 Z" fill="var(--p3)" opacity=".06"/>
-        <circle cx="198" cy="24" r="4" fill="var(--p3)"/>
-        <line x1="8" y1="84" x2="200" y2="84" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
-        <text x="195" y="18" font-size="9" fill="var(--p3)" text-anchor="end" font-family="system-ui" font-weight="700">▲ Hoy</text>
-      </svg>
-    </div>
-    <div class="col2-card">
-      <h3 style="color:var(--p3);margin-bottom:6px">Gráfico de pendiente</h3>
-      <svg viewBox="0 0 380 200" width="100%" style="display:block">
-        <!-- Column guides -->
-        <line x1="120" y1="10" x2="120" y2="178" stroke="var(--dim)" stroke-width=".8" stroke-dasharray="3 3"/>
-        <line x1="260" y1="10" x2="260" y2="178" stroke="var(--dim)" stroke-width=".8" stroke-dasharray="3 3"/>
-        <!-- Line A: Descending red 78%→49% -->
-        <line x1="120" y1="22" x2="260" y2="100" stroke="#f76a6a" stroke-width="4" stroke-linecap="round" opacity=".9"/>
-        <!-- Line B: Ascending gray 45%→71% -->
-        <line x1="120" y1="118" x2="260" y2="48" stroke="rgba(255,255,255,.5)" stroke-width="3.5" stroke-linecap="round"/>
-        <!-- Line C: Ascending gray 32%→61% -->
-        <line x1="120" y1="162" x2="260" y2="76" stroke="rgba(255,255,255,.5)" stroke-width="3.5" stroke-linecap="round"/>
-        <!-- Circles A -->
-        <circle cx="120" cy="22" r="7" fill="#f76a6a"/>
-        <circle cx="260" cy="100" r="7" fill="#f76a6a"/>
-        <!-- Circles B -->
-        <circle cx="120" cy="118" r="7" fill="rgba(255,255,255,.55)"/>
-        <circle cx="260" cy="48" r="7" fill="rgba(255,255,255,.55)"/>
-        <!-- Circles C -->
-        <circle cx="120" cy="162" r="7" fill="rgba(255,255,255,.55)"/>
-        <circle cx="260" cy="76" r="7" fill="rgba(255,255,255,.55)"/>
-        <!-- Labels A B C -->
-        <text x="8" y="26" font-size="18" fill="#f76a6a" font-family="system-ui" font-weight="700">A ▼</text>
-        <text x="8" y="122" font-size="18" fill="rgba(255,255,255,.75)" font-family="system-ui" font-weight="700">B ▲</text>
-        <text x="8" y="166" font-size="18" fill="rgba(255,255,255,.75)" font-family="system-ui" font-weight="700">C ▲</text>
-        <!-- Left percentages -->
-        <text x="114" y="26" font-size="17" fill="#f76a6a" font-family="system-ui" font-weight="700" text-anchor="end">78%</text>
-        <text x="114" y="122" font-size="17" fill="rgba(255,255,255,.75)" font-family="system-ui" font-weight="600" text-anchor="end">45%</text>
-        <text x="114" y="166" font-size="17" fill="rgba(255,255,255,.75)" font-family="system-ui" font-weight="600" text-anchor="end">32%</text>
-        <!-- Right percentages -->
-        <text x="268" y="104" font-size="17" fill="#f76a6a" font-family="system-ui" font-weight="700">49%</text>
-        <text x="268" y="52" font-size="17" fill="rgba(255,255,255,.75)" font-family="system-ui" font-weight="600">71%</text>
-        <text x="268" y="80" font-size="17" fill="rgba(255,255,255,.75)" font-family="system-ui" font-weight="600">61%</text>
-        <!-- Year labels -->
-        <text x="120" y="194" font-size="13" fill="rgba(255,255,255,.3)" font-family="system-ui" text-anchor="middle">2023</text>
-        <text x="260" y="194" font-size="13" fill="rgba(255,255,255,.3)" font-family="system-ui" text-anchor="middle">2024</text>
-      </svg>
-    </div>
-  </div>
-</div>
-
-<div class="slide" data-p="3">
-  <div class="label" style="color:var(--p3)">Tendencias y relaciones</div>
-  <h2>Dispersión: visualizando relaciones entre variables</h2>
-  <div style="display:grid;grid-template-columns:1fr auto;gap:32px;max-width:860px;width:100%;margin:18px 0;align-items:center">
-    <div style="display:flex;flex-direction:column;gap:14px;text-align:left">
-      <p style="font-size:1.18rem;color:var(--muted)"><strong>¿Los vendedores que hacen más llamadas venden más?</strong></p>
-      <div style="background:rgba(37,150,85,.07);border:1px solid rgba(37,150,85,.2);border-radius:10px;padding:13px 16px;display:flex;flex-direction:column;gap:6px">
-        <div style="font-size:1.08rem;font-weight:700;color:var(--p3)">Cómo leerlo</div>
-        <ul style="list-style:disc;padding-left:18px;margin:0;display:flex;flex-direction:column;gap:5px">
-          <li style="font-size:1.05rem;color:var(--muted)">Un punto = un vendedor</li>
-          <li style="font-size:1.05rem;color:var(--muted)">Eje X = cantidad de llamadas</li>
-          <li style="font-size:1.05rem;color:var(--muted)">Eje Y = ventas totales</li>
-          <li style="font-size:1.05rem;color:var(--muted)">La línea punteada muestra la tendencia</li>
-        </ul>
-      </div>
-    </div>
-    <svg viewBox="0 0 260 195" width="380" height="285" style="flex-shrink:0;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.02)">
-      <!-- axes -->
-      <line x1="38" y1="14" x2="38" y2="168" stroke="var(--dim)" stroke-width=".9"/>
-      <line x1="38" y1="168" x2="252" y2="168" stroke="var(--dim)" stroke-width=".9"/>
-      <!-- 2 horizontal guides only -->
-      <line x1="38" y1="117" x2="252" y2="117" stroke="var(--border)" stroke-width=".7"/>
-      <line x1="38" y1="66"  x2="252" y2="66"  stroke="var(--border)" stroke-width=".7"/>
-      <!-- axis titles -->
-      <text x="145" y="184" font-size="9" fill="rgba(255,255,255,.38)" font-family="system-ui" text-anchor="middle">Llamadas mensuales</text>
-      <text x="145" y="10"  font-size="9" fill="rgba(255,255,255,.38)" font-family="system-ui" text-anchor="middle">Ventas ($K)</text>
-      <!-- trend line -->
-      <line x1="44" y1="160" x2="248" y2="26" stroke="var(--p3)" stroke-width="1.2" opacity=".22" stroke-dasharray="5 4"/>
-      <!-- scattered points with positive correlation -->
-      <circle cx="55"  cy="152" r="5" fill="var(--p3)" opacity=".8"/>
-      <circle cx="72"  cy="108" r="5" fill="var(--p3)" opacity=".8"/>
-      <circle cx="80"  cy="158" r="5" fill="var(--p3)" opacity=".8"/>
-      <circle cx="98"  cy="122" r="5" fill="var(--p3)" opacity=".8"/>
-      <circle cx="108" cy="85"  r="5" fill="var(--p3)" opacity=".8"/>
-      <circle cx="118" cy="134" r="5" fill="var(--p3)" opacity=".8"/>
-      <circle cx="132" cy="100" r="5" fill="var(--p3)" opacity=".8"/>
-      <circle cx="142" cy="62"  r="5" fill="var(--p3)" opacity=".8"/>
-      <circle cx="158" cy="112" r="5" fill="var(--p3)" opacity=".8"/>
-      <circle cx="168" cy="74"  r="5" fill="var(--p3)" opacity=".8"/>
-      <circle cx="180" cy="48"  r="5" fill="var(--p3)" opacity=".8"/>
-      <circle cx="195" cy="88"  r="5" fill="var(--p3)" opacity=".8"/>
-      <circle cx="210" cy="38"  r="5" fill="var(--p3)" opacity=".8"/>
-      <circle cx="228" cy="58"  r="5" fill="var(--p3)" opacity=".8"/>
-      <circle cx="242" cy="28"  r="5" fill="var(--p3)" opacity=".8"/>
-    </svg>
-  </div>
-</div>
-
-<div class="slide" data-p="3">
-  <div class="label" style="color:var(--p3)">Regla de oro</div>
-  <h2>Barras: siempre base cero</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:840px;width:100%;margin:16px 0;align-items:start">
-
-    <!-- ✗ Eje truncado -->
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <svg viewBox="0 0 200 170" width="100%" style="display:block">
-        <text x="110" y="12" font-size="10" fill="#f76a6a" text-anchor="middle" font-family="system-ui" font-weight="700">✗ Eje truncado (desde 90%)</text>
-        <line x1="34" y1="20" x2="34" y2="145" stroke="var(--dim)" stroke-width=".8"/>
-        <line x1="34" y1="145" x2="188" y2="145" stroke="var(--dim)" stroke-width=".8"/>
-        <text x="31" y="23"  font-size="7" fill="rgba(255,255,255,.4)" font-family="system-ui" text-anchor="end">100%</text>
-        <text x="31" y="84"  font-size="7" fill="rgba(255,255,255,.4)" font-family="system-ui" text-anchor="end">95%</text>
-        <text x="31" y="148" font-size="7" fill="rgba(255,255,255,.4)" font-family="system-ui" text-anchor="end">90%</text>
-        <line x1="34" y1="82" x2="188" y2="82" stroke="var(--border)" stroke-width=".6"/>
-        <!-- 91%: h=(91-90)*12.5=12.5, y=145-12.5=132 -->
-        <!-- 96%: h=(96-90)*12.5=75,   y=145-75=70     -->
-        <!-- 93%: h=(93-90)*12.5=37.5, y=145-37.5=108  -->
-        <rect x="48"  y="133" width="32" height="12"  rx="2" fill="#f76a6a" opacity=".75"/>
-        <rect x="96"  y="70"  width="32" height="75"  rx="2" fill="#f76a6a" opacity=".75"/>
-        <rect x="144" y="108" width="32" height="37"  rx="2" fill="#f76a6a" opacity=".75"/>
-        <text x="64"  y="129" font-size="7.5" fill="rgba(255,255,255,.75)" font-family="system-ui" text-anchor="middle">91%</text>
-        <text x="112" y="66"  font-size="7.5" fill="rgba(255,255,255,.75)" font-family="system-ui" text-anchor="middle">96%</text>
-        <text x="160" y="104" font-size="7.5" fill="rgba(255,255,255,.75)" font-family="system-ui" text-anchor="middle">93%</text>
-        <text x="64"  y="157" font-size="8" fill="rgba(255,255,255,.32)" font-family="system-ui" text-anchor="middle">A</text>
-        <text x="112" y="157" font-size="8" fill="rgba(255,255,255,.32)" font-family="system-ui" text-anchor="middle">B</text>
-        <text x="160" y="157" font-size="8" fill="rgba(255,255,255,.32)" font-family="system-ui" text-anchor="middle">C</text>
-      </svg>
-      <div style="background:rgba(247,106,106,.06);border:1px solid rgba(247,106,106,.3);border-radius:10px;padding:13px 15px;text-align:left">
-        <div style="font-size:1.02rem;font-weight:700;color:#f76a6a;margin-bottom:6px">✗ Eje truncado</div>
-        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px">
-          <li style="display:flex;gap:7px;font-size:.98rem;color:var(--muted)"><span style="color:#f76a6a;font-weight:700;flex-shrink:0">·</span>El eje arranca en 90%, no en 0%</li>
-          <li style="display:flex;gap:7px;font-size:.98rem;color:var(--muted)"><span style="color:#f76a6a;font-weight:700;flex-shrink:0">·</span>Diferencia real entre barras: solo 5 puntos</li>
-          <li style="display:flex;gap:7px;font-size:.98rem;color:var(--muted)"><span style="color:#f76a6a;font-weight:700;flex-shrink:0">·</span>Visualmente parece un abismo — manipulación</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- ✓ Base cero -->
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <svg viewBox="0 0 200 170" width="100%" style="display:block">
-        <text x="110" y="12" font-size="10" fill="var(--p3)" text-anchor="middle" font-family="system-ui" font-weight="700">✓ Base cero (desde 0%)</text>
-        <line x1="34" y1="20" x2="34" y2="145" stroke="var(--dim)" stroke-width=".8"/>
-        <line x1="34" y1="145" x2="188" y2="145" stroke="var(--dim)" stroke-width=".8"/>
-        <text x="31" y="23"  font-size="7" fill="rgba(255,255,255,.4)" font-family="system-ui" text-anchor="end">100%</text>
-        <text x="31" y="84"  font-size="7" fill="rgba(255,255,255,.4)" font-family="system-ui" text-anchor="end">50%</text>
-        <text x="31" y="148" font-size="7" fill="rgba(255,255,255,.4)" font-family="system-ui" text-anchor="end">0%</text>
-        <line x1="34" y1="82" x2="188" y2="82" stroke="var(--border)" stroke-width=".6"/>
-        <!-- 91%: h=91*1.25=113.75≈114, y=145-114=31 -->
-        <!-- 96%: h=96*1.25=120,         y=145-120=25 -->
-        <!-- 93%: h=93*1.25=116.25≈116, y=145-116=29 -->
-        <rect x="48"  y="31" width="32" height="114" rx="2" fill="var(--p3)" opacity=".75"/>
-        <rect x="96"  y="25" width="32" height="120" rx="2" fill="var(--p3)" opacity=".75"/>
-        <rect x="144" y="29" width="32" height="116" rx="2" fill="var(--p3)" opacity=".75"/>
-        <text x="64"  y="27"  font-size="7.5" fill="rgba(255,255,255,.75)" font-family="system-ui" text-anchor="middle">91%</text>
-        <text x="112" y="21"  font-size="7.5" fill="rgba(255,255,255,.75)" font-family="system-ui" text-anchor="middle">96%</text>
-        <text x="160" y="25"  font-size="7.5" fill="rgba(255,255,255,.75)" font-family="system-ui" text-anchor="middle">93%</text>
-        <text x="64"  y="157" font-size="8" fill="rgba(255,255,255,.32)" font-family="system-ui" text-anchor="middle">A</text>
-        <text x="112" y="157" font-size="8" fill="rgba(255,255,255,.32)" font-family="system-ui" text-anchor="middle">B</text>
-        <text x="160" y="157" font-size="8" fill="rgba(255,255,255,.32)" font-family="system-ui" text-anchor="middle">C</text>
-      </svg>
-      <div style="background:rgba(37,150,85,.07);border:1px solid rgba(37,150,85,.3);border-radius:10px;padding:13px 15px;text-align:left">
-        <div style="font-size:1.02rem;font-weight:700;color:var(--p3);margin-bottom:6px">✓ Base cero</div>
-        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px">
-          <li style="display:flex;gap:7px;font-size:.98rem;color:var(--muted)"><span style="color:var(--p3);font-weight:700;flex-shrink:0">·</span>El eje arranca en 0% — lectura honesta</li>
-          <li style="display:flex;gap:7px;font-size:.98rem;color:var(--muted)"><span style="color:var(--p3);font-weight:700;flex-shrink:0">·</span>Las diferencias son mínimas — como son en realidad</li>
-          <li style="display:flex;gap:7px;font-size:.98rem;color:var(--muted)"><span style="color:var(--p3);font-weight:700;flex-shrink:0">·</span>La audiencia puede comparar correctamente</li>
-        </ul>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<div class="slide" data-p="3">
-  <div class="label" style="color:var(--p3)">Enemigos de la visualización</div>
-  <h2>Gráficos 3D: deforman, engañan, confunden</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:840px;width:100%;margin:16px 0;align-items:start">
-
-    <!-- ✗ 3D Pie -->
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <svg viewBox="0 0 200 148" width="100%" style="display:block">
-        <text x="100" y="12" font-size="10" fill="#f76a6a" text-anchor="middle" font-family="system-ui" font-weight="700">✗ Pie chart 3D</text>
-        <!-- Depth walls (back to front) -->
-        <path d="M 76 93 A 78 25 0 0 1 22 68 L 22 90 A 78 25 0 0 0 76 115 Z" fill="var(--p2)" opacity=".5"/>
-        <path d="M 163 84 A 78 25 0 0 1 76 93 L 76 115 A 78 25 0 0 0 163 106 Z" fill="var(--p1)" opacity=".5"/>
-        <path d="M 178 68 A 78 25 0 0 1 163 84 L 163 106 A 78 25 0 0 0 178 90 Z" fill="#f76a6a" opacity=".5"/>
-        <!-- Radial edge walls -->
-        <polygon points="100,68 76,93 76,115 100,90" fill="rgba(0,0,0,.18)"/>
-        <polygon points="100,68 163,84 163,106 100,90" fill="rgba(0,0,0,.14)"/>
-        <line x1="100" y1="68" x2="100" y2="90" stroke="rgba(0,0,0,.2)" stroke-width=".8"/>
-        <!-- Top face slices (D, C, B, A from back to front) -->
-        <path d="M 100 68 L 37 53 A 78 25 0 0 1 100 43 Z" fill="var(--p3)" opacity=".9"/>
-        <path d="M 100 68 L 76 93 A 78 25 0 0 1 37 53 Z" fill="var(--p2)" opacity=".9"/>
-        <path d="M 100 68 L 163 84 A 78 25 0 0 1 76 93 Z" fill="var(--p1)" opacity=".9"/>
-        <path d="M 100 68 L 100 43 A 78 25 0 0 1 163 84 Z" fill="#f76a6a" opacity=".9"/>
-        <!-- Slice dividers -->
-        <line x1="100" y1="68" x2="100" y2="43"  stroke="rgba(0,0,0,.22)" stroke-width=".8"/>
-        <line x1="100" y1="68" x2="163" y2="84"  stroke="rgba(0,0,0,.22)" stroke-width=".8"/>
-        <line x1="100" y1="68" x2="76"  y2="93"  stroke="rgba(0,0,0,.22)" stroke-width=".8"/>
-        <line x1="100" y1="68" x2="37"  y2="53"  stroke="rgba(0,0,0,.22)" stroke-width=".8"/>
-        <!-- Labels -->
-        <text x="136" y="58" font-size="8.5" fill="white" font-family="system-ui" font-weight="700">A</text>
-        <text x="120" y="86" font-size="8.5" fill="white" font-family="system-ui" font-weight="700">B</text>
-        <text x="64"  y="79" font-size="8.5" fill="white" font-family="system-ui" font-weight="700">C</text>
-        <text x="68"  y="57" font-size="8.5" fill="white" font-family="system-ui" font-weight="700">D</text>
-        <!-- Annotation -->
-        <text x="100" y="138" font-size="8" fill="rgba(247,106,106,.72)" font-family="system-ui" text-anchor="middle">¿A es mayor que C? ¿Cuánto mayor?</text>
-      </svg>
-      <div style="background:rgba(247,106,106,.06);border:1px solid rgba(247,106,106,.3);border-radius:10px;padding:13px 15px;text-align:left">
-        <div style="font-size:1.02rem;font-weight:700;color:#f76a6a;margin-bottom:6px">✗ Pie chart 3D</div>
-        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px">
-          <li style="display:flex;gap:7px;font-size:.98rem;color:var(--muted)"><span style="color:#f76a6a;font-weight:700;flex-shrink:0">·</span>La perspectiva deforma las proporciones reales</li>
-          <li style="display:flex;gap:7px;font-size:.98rem;color:var(--muted)"><span style="color:#f76a6a;font-weight:700;flex-shrink:0">·</span>El sector frontal parece más grande de lo que es</li>
-          <li style="display:flex;gap:7px;font-size:.98rem;color:var(--muted)"><span style="color:#f76a6a;font-weight:700;flex-shrink:0">·</span>Imposible leer valores exactos</li>
-          <li style="display:flex;gap:7px;font-size:.98rem;color:var(--muted)"><span style="color:#f76a6a;font-weight:700;flex-shrink:0">·</span>No hay caso de uso donde 3D sea mejor que 2D</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- ✓ Horizontal bars -->
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <svg viewBox="0 0 200 148" width="100%" style="display:block">
-        <text x="100" y="12" font-size="10" fill="var(--p3)" text-anchor="middle" font-family="system-ui" font-weight="700">✓ Barras horizontales</text>
-        <!-- Y axis -->
-        <line x1="30" y1="20" x2="30" y2="128" stroke="var(--dim)" stroke-width=".8"/>
-        <!-- X axis -->
-        <line x1="30" y1="128" x2="188" y2="128" stroke="var(--dim)" stroke-width=".8"/>
-        <!-- Guides at 25% and 50% -->
-        <line x1="109" y1="20" x2="109" y2="128" stroke="var(--border)" stroke-width=".6"/>
-        <line x1="188" y1="20" x2="188" y2="128" stroke="var(--border)" stroke-width=".6"/>
-        <!-- X labels -->
-        <text x="30"  y="138" font-size="7" fill="rgba(255,255,255,.35)" font-family="system-ui" text-anchor="middle">0%</text>
-        <text x="109" y="138" font-size="7" fill="rgba(255,255,255,.35)" font-family="system-ui" text-anchor="middle">25%</text>
-        <text x="188" y="138" font-size="7" fill="rgba(255,255,255,.35)" font-family="system-ui" text-anchor="middle">50%</text>
-        <!-- Bars (scale 0–50% = 158px, 3.16px/%) -->
-        <rect x="30" y="27"  width="111" height="18" rx="2" fill="#f76a6a" opacity=".8"/>
-        <rect x="30" y="52"  width="63"  height="18" rx="2" fill="var(--p1)" opacity=".8"/>
-        <rect x="30" y="77"  width="95"  height="18" rx="2" fill="var(--p2)" opacity=".8"/>
-        <rect x="30" y="102" width="47"  height="18" rx="2" fill="var(--p3)" opacity=".8"/>
-        <!-- Category labels -->
-        <text x="26" y="39"  font-size="8" fill="rgba(255,255,255,.5)" font-family="system-ui" text-anchor="end">A</text>
-        <text x="26" y="64"  font-size="8" fill="rgba(255,255,255,.5)" font-family="system-ui" text-anchor="end">B</text>
-        <text x="26" y="89"  font-size="8" fill="rgba(255,255,255,.5)" font-family="system-ui" text-anchor="end">C</text>
-        <text x="26" y="114" font-size="8" fill="rgba(255,255,255,.5)" font-family="system-ui" text-anchor="end">D</text>
-        <!-- Value labels -->
-        <text x="145" y="39"  font-size="8" fill="rgba(255,255,255,.8)" font-family="system-ui" font-weight="700">35%</text>
-        <text x="97"  y="64"  font-size="8" fill="rgba(255,255,255,.8)" font-family="system-ui" font-weight="700">20%</text>
-        <text x="129" y="89"  font-size="8" fill="rgba(255,255,255,.8)" font-family="system-ui" font-weight="700">30%</text>
-        <text x="81"  y="114" font-size="8" fill="rgba(255,255,255,.8)" font-family="system-ui" font-weight="700">15%</text>
-      </svg>
-      <div style="background:rgba(37,150,85,.07);border:1px solid rgba(37,150,85,.3);border-radius:10px;padding:13px 15px;text-align:left">
-        <div style="font-size:1.02rem;font-weight:700;color:var(--p3);margin-bottom:6px">✓ Barras horizontales</div>
-        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px">
-          <li style="display:flex;gap:7px;font-size:.98rem;color:var(--muted)"><span style="color:var(--p3);font-weight:700;flex-shrink:0">·</span>Longitudes exactas → comparación inmediata</li>
-          <li style="display:flex;gap:7px;font-size:.98rem;color:var(--muted)"><span style="color:var(--p3);font-weight:700;flex-shrink:0">·</span>Valores precisos visibles al final de cada barra</li>
-          <li style="display:flex;gap:7px;font-size:.98rem;color:var(--muted)"><span style="color:var(--p3);font-weight:700;flex-shrink:0">·</span>Sin distorsión: las proporciones reales se leen correctamente</li>
-          <li style="display:flex;gap:7px;font-size:.98rem;color:var(--muted)"><span style="color:var(--p3);font-weight:700;flex-shrink:0">·</span>Las etiquetas largas caben cómodamente a la izquierda</li>
-        </ul>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ══════════════ P4 ══════════════ -->
-<div class="slide" data-p="4">
-  <div class="label" style="color:var(--p4)">Alejandra Bertrán · Storytelling con datos</div>
-  <h2>¿Difícil de leer? Será difícil de hacer.</h2>
-  <div class="vs-row" style="max-width:820px">
-    <div class="vs-card" style="border-color:rgba(247,106,106,.4)">
-      <div style="font-size:.86rem;color:#f76a6a;font-weight:700;text-transform:uppercase;margin-bottom:8px">✗ Gráfico espagueti — todo compite</div>
-      <svg viewBox="0 0 180 100" width="100%" style="display:block;margin-bottom:8px">
-        <polyline points="5,30 30,72 55,18 80,80 105,38 130,62 155,24 175,66" fill="none" stroke="rgba(124,106,247,.45)" stroke-width="1.5" stroke-linecap="round"/>
-        <polyline points="5,50 30,18 55,80 80,28 105,72 130,24 155,62 175,38" fill="none" stroke="rgba(91,138,247,.45)" stroke-width="1.5" stroke-linecap="round"/>
-        <polyline points="5,70 30,38 55,60 80,15 105,55 130,80 155,36 175,55" fill="none" stroke="rgba(76,175,125,.45)" stroke-width="1.5" stroke-linecap="round"/>
-        <polyline points="5,20 30,55 55,34 80,62 105,20 130,48 155,76 175,28" fill="none" stroke="rgba(247,169,75,.45)" stroke-width="1.5" stroke-linecap="round"/>
-        <polyline points="5,60 30,28 55,55 80,44 105,80 130,14 155,52 175,72" fill="none" stroke="rgba(224,92,173,.45)" stroke-width="1.5" stroke-linecap="round"/>
-        <polyline points="5,40 30,62 55,44 80,55 105,28 130,72 155,38 175,20" fill="none" stroke="rgba(247,106,106,.45)" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <p>Cuando todo compite, el dashboard es <strong>ruido</strong>.</p>
-    </div>
-    <div class="vs-label">→</div>
-    <div class="vs-card" style="border-color:var(--p4)">
-      <div style="font-size:.86rem;color:var(--p4);font-weight:700;text-transform:uppercase;margin-bottom:8px">✓ Una línea resaltada — decisión inmediata</div>
-      <svg viewBox="0 0 180 100" width="100%" style="display:block;margin-bottom:8px">
-        <polyline points="5,30 30,72 55,18 80,80 105,38 130,62 155,24 175,66" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="1.2"/>
-        <polyline points="5,50 30,18 55,80 80,28 105,72 130,24 155,62 175,38" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="1.2"/>
-        <polyline points="5,70 30,38 55,60 80,15 105,55 130,80 155,36 175,55" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="1.2"/>
-        <polyline points="5,20 30,55 55,34 80,62 105,20 130,48 155,76 175,28" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="1.2"/>
-        <polyline points="5,60 30,28 55,55 80,44 105,80 130,14 155,52 175,72" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="1.2"/>
-        <polyline points="5,40 30,62 55,44 80,55 105,28 130,72 155,38 175,20" fill="none" stroke="var(--p4)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="175" cy="20" r="5" fill="var(--p4)"/>
-        <text x="172" y="14" font-size="9" fill="var(--p4)" text-anchor="end" font-family="system-ui" font-weight="700">Producto A ▲</text>
-      </svg>
-      <p>Un dato destacado con contexto genera <strong>acción inmediata</strong>.</p>
-    </div>
-  </div>
-</div>
-
-<div class="slide" data-p="4">
-  <div class="label" style="color:var(--p4)">Alineación y espacio</div>
-  <h2>Alineación izquierda y el patrón Z de lectura</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:860px;width:100%;margin:16px 0;align-items:start">
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <p style="font-size:1.26rem;color:var(--muted);line-height:1.6">Evitar el texto centrado. La justificación a la izquierda crea líneas limpias que guían la lectura. El <strong>espacio en blanco</strong> es tan estratégico como una pausa al hablar.</p>
-      <div style="background:rgba(192,122,24,.07);border:1px solid rgba(192,122,24,.25);border-radius:12px;padding:18px 20px">
-        <div style="font-size:1.2rem;font-weight:700;color:var(--p4);margin-bottom:10px">Reglas de alineación</div>
-        <div style="display:flex;flex-direction:column;gap:11px">
-          <div style="display:flex;align-items:flex-start;gap:12px;font-size:1.18rem;color:var(--muted);line-height:1.5">
-            <span style="width:7px;height:7px;border-radius:50%;background:var(--p4);flex-shrink:0;margin-top:5px"></span>
-            <span>Títulos y texto: <strong>siempre izquierda</strong></span>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:12px;font-size:1.18rem;color:var(--muted);line-height:1.5">
-            <span style="width:7px;height:7px;border-radius:50%;background:var(--p4);flex-shrink:0;margin-top:5px"></span>
-            <span>Números en columnas: derecha (para comparar)</span>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:12px;font-size:1.18rem;color:var(--muted);line-height:1.5">
-            <span style="width:7px;height:7px;border-radius:50%;background:var(--p4);flex-shrink:0;margin-top:5px"></span>
-            <span>Elementos: alineados al mismo eje visual</span>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:12px;font-size:1.18rem;color:var(--muted);line-height:1.5">
-            <span style="width:7px;height:7px;border-radius:50%;background:var(--p4);flex-shrink:0;margin-top:5px"></span>
-            <span>Espaciado consistente entre secciones</span>
-          </div>
+    <!-- 1. Event Results -->
+    <div class="dataset">
+      <div class="ds-header raw">
+        <span class="ds-title">Olympic_Athlete_Event_Results.csv</span>
+        <div class="ds-meta">
+          <span class="ds-pill pill-raw">Raw</span>
+          <span class="ds-pill pill-rows">316.834 filas</span>
+          <span class="ds-pill" style="background:#f3f4f6;color:#374151">Olympedia (Kaggle)</span>
         </div>
       </div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <svg viewBox="0 0 200 130" width="100%" style="display:block;border-radius:10px;border:1px solid var(--border);background:var(--card-bg)">
-        <rect x="14" y="12" width="114" height="12" rx="2" fill="var(--p4)" opacity=".7"/>
-        <rect x="14" y="30" width="92" height="8" rx="2" fill="rgba(0,0,0,.1)"/>
-        <rect x="14" y="42" width="105" height="8" rx="2" fill="rgba(0,0,0,.08)"/>
-        <rect x="14" y="54" width="78" height="8" rx="2" fill="rgba(0,0,0,.08)"/>
-        <line x1="10" y1="70" x2="190" y2="70" stroke="var(--border)" stroke-width="1"/>
-        <rect x="14" y="78" width="68" height="36" rx="3" fill="rgba(192,122,24,.12)" stroke="var(--p4)" stroke-width="1"/>
-        <rect x="90" y="78" width="100" height="36" rx="3" fill="var(--card-bg)" stroke="var(--border)" stroke-width="1"/>
-      </svg>
-      <div style="background:rgba(192,122,24,.06);border:1px solid rgba(192,122,24,.2);border-radius:9px;padding:10px 14px;font-size:1.06rem;color:var(--muted);text-align:center">
-        ← Patrón Z: arriba-izq → arriba-der → abajo-izq → abajo-der
+      <div class="ds-desc">
+        Un registro por <strong>atleta × evento</strong>. Cubre todas las ediciones desde 1896 hasta Tokyo 2020.
+        Es la fuente más granular del proyecto: permite calcular conteo de atletas, especialización por deporte y eficiencia por modelo de inversión.
       </div>
+      <table class="field-table">
+        <tr><th>Campo</th><th>Tipo</th><th>Nulos</th><th>Rango / Valores</th><th>Descripción</th></tr>
+        <tr><td class="fname">edition</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>55 ediciones únicas</td><td>Nombre de la edición olímpica</td></tr>
+        <tr><td class="fname">edition_id</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>1 – 62</td><td>ID numérico de la edición — join con Olympics_Games</td></tr>
+        <tr><td class="fname">country_noc</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>231 países</td><td>Código NOC del país del atleta</td></tr>
+        <tr><td class="fname">sport</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>112 deportes</td><td>Nombre del deporte</td></tr>
+        <tr><td class="fname">event</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>964 eventos</td><td>Evento específico (ej: <em>100 metres, Men</em>)</td></tr>
+        <tr><td class="fname">result_id</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>—</td><td>Clave para join con Olympic_Results.csv</td></tr>
+        <tr><td class="fname">athlete</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>154.213 únicos</td><td>Nombre completo del atleta</td></tr>
+        <tr><td class="fname">athlete_id</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>—</td><td>Clave para join con Olympic_Athlete_Bio</td></tr>
+        <tr><td class="fname">pos</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>2.449 valores</td><td>Posición final o estado (<em>1, DNS, DNF, 3 h2 r1/2</em>)</td></tr>
+        <tr><td class="fname">medal</td><td><span class="ftype type-str">texto</span></td><td class="null-high">85.9%</td><td>Gold · Silver · Bronze</td><td>Medalla obtenida. <strong>null si el atleta no ganó medalla.</strong></td></tr>
+        <tr><td class="fname">isTeamSport</td><td><span class="ftype type-bool">booleano</span></td><td class="null-ok">0%</td><td>True / False</td><td>True si el evento es deporte de equipo. Usar para deduplicación.</td></tr>
+      </table>
+      <div class="note-box">Para contar medallas por país sin inflar deportes de equipo, deduplicar por <code>event + country_noc + medal</code> o filtrar con <code>isTeamSport</code>.</div>
     </div>
-  </div>
-  <p class="sub" style="max-width:680px">Un grid de 4 columnas iguales elimina decisiones de alineación y garantiza consistencia visual automática.</p>
-</div>
 
-<div class="slide" data-p="4">
-  <div class="label" style="color:var(--p4)">Depuración visual</div>
-  <h2>Eliminar para que quede perfecto</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;max-width:820px;width:100%;margin:16px 0;align-items:start">
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <p style="font-size:1.14rem;color:var(--muted)">Cada elemento visual que no comunica datos consume atención. Depurar es <strong>regalar foco</strong> al mensaje importante.</p>
-      <div style="background:rgba(192,122,24,.07);border:1px solid rgba(192,122,24,.25);border-radius:10px;padding:13px 15px">
-        <div style="font-size:1.08rem;font-weight:700;color:var(--p4);margin-bottom:8px">Protocolo de depuración (en orden)</div>
-        <div style="display:flex;flex-direction:column;gap:9px">
-          <div style="display:flex;align-items:flex-start;gap:10px;font-size:1.06rem;color:var(--muted);line-height:1.45">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--p4);flex-shrink:0;margin-top:4px"></span>
-            <span>Borre los <strong>bordes</strong> del gráfico</span>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:10px;font-size:1.06rem;color:var(--muted);line-height:1.45">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--p4);flex-shrink:0;margin-top:4px"></span>
-            <span>Atenúe o elimine las <strong>líneas de cuadrícula</strong></span>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:10px;font-size:1.06rem;color:var(--muted);line-height:1.45">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--p4);flex-shrink:0;margin-top:4px"></span>
-            <span>Etiquete datos <strong>directamente</strong> — sin leyendas</span>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:10px;font-size:1.06rem;color:var(--muted);line-height:1.45">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--p4);flex-shrink:0;margin-top:4px"></span>
-            <span>Elimine <strong>ejes redundantes</strong></span>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:10px;font-size:1.06rem;color:var(--muted);line-height:1.45">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--p4);flex-shrink:0;margin-top:4px"></span>
-            <span>Simplifique etiquetas de eje al mínimo</span>
-          </div>
+    <!-- 2. Bio -->
+    <div class="dataset">
+      <div class="ds-header raw">
+        <span class="ds-title">Olympic_Athlete_Bio.csv</span>
+        <div class="ds-meta">
+          <span class="ds-pill pill-raw">Raw</span>
+          <span class="ds-pill pill-rows">155.861 filas</span>
+          <span class="ds-pill" style="background:#f3f4f6;color:#374151">Olympedia (Kaggle)</span>
         </div>
       </div>
-      <div class="analogy" style="margin:0;padding:12px 16px">
-        <span class="qm">"</span>
-        Perfección es cuando no hay nada más que quitar — Saint-Exupéry (vía Tufte)
-      </div>
+      <div class="ds-desc">Datos biográficos de 155.861 atletas olímpicos históricos. Útil para análisis demográficos complementarios (edad, sexo, talla).</div>
+      <table class="field-table">
+        <tr><th>Campo</th><th>Tipo</th><th>Nulos</th><th>Rango / Valores</th><th>Descripción</th></tr>
+        <tr><td class="fname">athlete_id</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>—</td><td>Clave primaria — join con Event Results</td></tr>
+        <tr><td class="fname">name</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>152.747 únicos</td><td>Nombre completo del atleta</td></tr>
+        <tr><td class="fname">sex</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>Male · Female</td><td>Sexo biológico</td></tr>
+        <tr><td class="fname">born</td><td><span class="ftype type-str">texto</span></td><td class="null-warn">2.6%</td><td>42.687 valores</td><td>Fecha de nacimiento en texto (<em>30 June 1985</em>). Convertir a date si se usa.</td></tr>
+        <tr><td class="fname">height</td><td><span class="ftype type-float">decimal</span></td><td class="null-high">32.6%</td><td>127 – 226 cm</td><td>Altura en centímetros</td></tr>
+        <tr><td class="fname">weight</td><td><span class="ftype type-str">texto</span></td><td class="null-high">32.6%</td><td>—</td><td>Peso en kg (texto, puede incluir rangos). No usar como variable del modelo.</td></tr>
+        <tr><td class="fname">country</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>707 valores</td><td>País de origen (nombre completo)</td></tr>
+        <tr><td class="fname">country_noc</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>232 países</td><td>Código NOC del país</td></tr>
+        <tr><td class="fname">description</td><td><span class="ftype type-str">texto</span></td><td class="null-high">64.8%</td><td>—</td><td>Notas biográficas y récords personales</td></tr>
+        <tr><td class="fname">special_notes</td><td><span class="ftype type-str">texto</span></td><td class="null-high">61.1%</td><td>—</td><td>Logros fuera de los JJ.OO. (Mundiales, Panamericanos, etc.)</td></tr>
+      </table>
+      <div class="note-box"><code>height</code> y <code>weight</code> tienen ~33% de nulos — no recomendado como variables del modelo principal.</div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <div style="background:rgba(247,106,106,.06);border:1px solid rgba(247,106,106,.25);border-radius:10px;padding:12px 14px">
-        <div style="font-size:.9rem;font-weight:700;color:#f76a6a;margin-bottom:6px">✗ Antes — saturado</div>
-        <svg viewBox="0 0 180 82" width="100%" style="display:block;overflow:hidden">
-          <rect x="5" y="5" width="170" height="58" fill="none" stroke="var(--border)" stroke-width="1.5"/>
-          <line x1="5" y1="20" x2="175" y2="20" stroke="var(--border)" stroke-width=".8"/><line x1="5" y1="35" x2="175" y2="35" stroke="var(--border)" stroke-width=".8"/><line x1="5" y1="50" x2="175" y2="50" stroke="var(--border)" stroke-width=".8"/>
-          <rect x="20" y="28" width="14" height="35" rx="1" fill="#f76a6a" opacity=".5"/>
-          <rect x="44" y="16" width="14" height="47" rx="1" fill="#f76a6a" opacity=".5"/>
-          <rect x="68" y="34" width="14" height="29" rx="1" fill="#f76a6a" opacity=".5"/>
-          <rect x="92" y="22" width="14" height="41" rx="1" fill="#f76a6a" opacity=".5"/>
-          <text x="27" y="76" font-size="7" fill="var(--dim)" text-anchor="middle" font-family="system-ui">Ene</text><text x="51" y="76" font-size="7" fill="var(--dim)" text-anchor="middle" font-family="system-ui">Feb</text><text x="75" y="76" font-size="7" fill="var(--dim)" text-anchor="middle" font-family="system-ui">Mar</text><text x="99" y="76" font-size="7" fill="var(--dim)" text-anchor="middle" font-family="system-ui">Abr</text>
-        </svg>
-      </div>
-      <div style="background:rgba(192,122,24,.07);border:1px solid var(--p4);border-radius:10px;padding:12px 14px">
-        <div style="font-size:.9rem;font-weight:700;color:var(--p4);margin-bottom:6px">✓ Después — limpio</div>
-        <svg viewBox="0 0 180 70" width="100%" style="display:block">
-          <rect x="20" y="28" width="14" height="35" rx="1" fill="var(--p4)" opacity=".7"/>
-          <rect x="44" y="16" width="14" height="47" rx="1" fill="var(--p4)" opacity=".7"/>
-          <rect x="68" y="34" width="14" height="29" rx="1" fill="var(--p4)" opacity=".7"/>
-          <rect x="92" y="22" width="14" height="41" rx="1" fill="var(--p4)" opacity=".7"/>
-          <text x="27" y="25" font-size="8" fill="var(--p4)" text-anchor="middle" font-family="system-ui" font-weight="700">63</text>
-          <text x="51" y="13" font-size="8" fill="var(--p4)" text-anchor="middle" font-family="system-ui" font-weight="700">87</text>
-          <text x="75" y="31" font-size="8" fill="var(--p4)" text-anchor="middle" font-family="system-ui" font-weight="700">44</text>
-          <text x="99" y="19" font-size="8" fill="var(--p4)" text-anchor="middle" font-family="system-ui" font-weight="700">72</text>
-        </svg>
-      </div>
-    </div>
-  </div>
-</div>
 
-<div class="slide" data-p="4">
-  <div class="label" style="color:var(--p4)">Ejes secundarios</div>
-  <h2>Un eje por gráfico</h2>
-  <div class="vs-row" style="max-width:820px">
-    <div class="vs-card" style="text-align:center">
-      <div style="font-size:.86rem;color:#f76a6a;font-weight:700;text-transform:uppercase;margin-bottom:8px">✗ Doble eje Y — dolor cognitivo</div>
-      <svg viewBox="0 0 180 100" width="100%" style="display:block;margin-bottom:6px">
-        <text x="4" y="12" font-size="8" fill="rgba(124,106,247,.8)" font-family="system-ui" font-weight="700">← Barras</text>
-        <text x="176" y="12" font-size="8" fill="#f76a6a" text-anchor="end" font-family="system-ui" font-weight="700">Líneas →</text>
-        <rect x="16" y="55" width="14" height="42" rx="2" fill="rgba(124,106,247,.5)"/>
-        <rect x="34" y="38" width="14" height="59" rx="2" fill="rgba(124,106,247,.5)"/>
-        <rect x="52" y="46" width="14" height="51" rx="2" fill="rgba(124,106,247,.5)"/>
-        <rect x="70" y="30" width="14" height="67" rx="2" fill="rgba(124,106,247,.5)"/>
-        <polyline points="16,75 34,52 52,62 70,40 88,55 106,28 124,44 142,20" fill="none" stroke="#f76a6a" stroke-width="2.2" stroke-linecap="round"/>
-        <line x1="12" y1="97" x2="175" y2="97" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
-      </svg>
-      <p style="font-size:.9rem;color:var(--dim);text-align:center;margin:0 0 8px">¿Qué dato va con qué eje?</p>
-    </div>
-    <div class="vs-label">→</div>
-    <div class="vs-card" style="border-color:var(--p4);text-align:center">
-      <div style="font-size:.86rem;color:var(--p4);font-weight:700;text-transform:uppercase;margin-bottom:8px">✓ Dos gráficos — un eje cada uno</div>
-      <svg viewBox="0 0 180 110" width="100%" style="display:block;margin-bottom:8px">
-        <rect x="16" y="26" width="14" height="24" rx="2" fill="rgba(124,106,247,.6)"/>
-        <rect x="34" y="18" width="14" height="32" rx="2" fill="rgba(124,106,247,.6)"/>
-        <rect x="52" y="22" width="14" height="28" rx="2" fill="rgba(124,106,247,.6)"/>
-        <rect x="70" y="12" width="14" height="38" rx="2" fill="rgba(124,106,247,.6)"/>
-        <line x1="12" y1="50" x2="90" y2="50" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
-        <text x="50" y="60" font-size="8" fill="rgba(255,255,255,.35)" text-anchor="middle" font-family="system-ui">Barras (eje único)</text>
-        <polyline points="16,90 34,80 52,86 70,72 88,80 106,64" fill="none" stroke="#f76a6a" stroke-width="2" stroke-linecap="round"/>
-        <line x1="12" y1="98" x2="115" y2="98" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
-        <text x="60" y="108" font-size="8" fill="rgba(255,255,255,.35)" text-anchor="middle" font-family="system-ui">Línea (eje único)</text>
-      </svg>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════ P5 ══════════════ -->
-<div class="slide" data-p="5">
-  <div class="label" style="color:var(--p5)">Elmer Baltazar Llusco · Diseño de dashboards interactivos</div>
-  <h2>Vemos antes de darnos cuenta</h2>
-  <div class="cols2" style="max-width:820px">
-    <div class="col2-card">
-      <p>La memoria icónica procesa características visuales en <strong>menos de 250ms</strong>, antes del pensamiento consciente. Si todo es igual de importante, <strong>nada destaca</strong>.</p>
-      <p style="margin-top:10px;font-size:1.06rem;color:var(--muted)">Un tamaño de fuente mayor o una línea más gruesa le dice al ejecutivo <em>adónde mirar primero</em>, sin que tenga que buscarlo.</p>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center">
-        <svg viewBox="0 0 80 48" width="104" height="62" style="display:block;margin:0 auto 4px">
-          <circle cx="14" cy="24" r="4" fill="rgba(255,255,255,.2)"/><circle cx="32" cy="24" r="4" fill="rgba(255,255,255,.2)"/><circle cx="52" cy="24" r="13" fill="var(--p5)"/><circle cx="70" cy="24" r="4" fill="rgba(255,255,255,.2)"/>
-        </svg>
-        <div style="font-size:.84rem;font-weight:700;color:var(--p5)">Tamaño</div>
-      </div>
-      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center">
-        <svg viewBox="0 0 80 48" width="104" height="62" style="display:block;margin:0 auto 4px">
-          <circle cx="14" cy="24" r="5" fill="rgba(255,255,255,.08)"/><circle cx="32" cy="24" r="5" fill="rgba(255,255,255,.18)"/><circle cx="50" cy="24" r="5" fill="rgba(255,255,255,.28)"/><circle cx="68" cy="24" r="5" fill="var(--p5)"/>
-        </svg>
-        <div style="font-size:.84rem;font-weight:700;color:var(--p5)">Intensidad</div>
-      </div>
-      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center">
-        <svg viewBox="0 0 80 48" width="104" height="62" style="display:block;margin:0 auto 4px">
-          <circle cx="18" cy="30" r="5" fill="rgba(255,255,255,.2)"/><circle cx="36" cy="30" r="5" fill="rgba(255,255,255,.2)"/><circle cx="54" cy="30" r="5" fill="rgba(255,255,255,.2)"/><circle cx="64" cy="10" r="5" fill="var(--p5)"/>
-        </svg>
-        <div style="font-size:.84rem;font-weight:700;color:var(--p5)">Posición</div>
-      </div>
-      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center">
-        <svg viewBox="0 0 80 48" width="104" height="62" style="display:block;margin:0 auto 4px">
-          <line x1="10" y1="12" x2="70" y2="12" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
-          <line x1="10" y1="24" x2="70" y2="24" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
-          <line x1="10" y1="36" x2="70" y2="36" stroke="var(--p5)" stroke-width="4"/>
-        </svg>
-        <div style="font-size:.84rem;font-weight:700;color:var(--p5)">Grosor de línea</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="slide" data-p="5">
-  <div class="label" style="color:var(--p5)">Uso estratégico del color</div>
-  <h2>El color no es decoración, es información</h2>
-  <div class="vs-row" style="max-width:820px">
-    <div class="vs-card" style="border-color:rgba(247,106,106,.4);text-align:center">
-      <div style="font-size:.86rem;color:#f76a6a;font-weight:700;text-transform:uppercase;margin-bottom:8px">✗ Arco iris — sin señal preatentiva</div>
-      <svg viewBox="0 0 160 80" width="100%" style="display:block;margin-bottom:8px">
-        <rect x="10" y="38" width="16" height="32" rx="2" fill="#7c6af7"/>
-        <rect x="30" y="24" width="16" height="46" rx="2" fill="#5b8af7"/>
-        <rect x="50" y="46" width="16" height="24" rx="2" fill="#4caf7d"/>
-        <rect x="70" y="30" width="16" height="40" rx="2" fill="#f7a94b"/>
-        <rect x="90" y="50" width="16" height="20" rx="2" fill="#e05cad"/>
-        <rect x="110" y="34" width="16" height="36" rx="2" fill="#f76a6a"/>
-      </svg>
-      <p style="font-size:.9rem;color:var(--dim);text-align:center;margin:0 0 8px">6 colores → el ojo no sabe dónde mirar</p>
-      <p>Si usamos el arco iris, el color pierde su valor preatentivo.</p>
-    </div>
-    <div class="vs-label">→</div>
-    <div class="vs-card" style="border-color:var(--p5);text-align:center">
-      <div style="font-size:.86rem;color:var(--p5);font-weight:700;text-transform:uppercase;margin-bottom:8px">✓ Un color con propósito — máximo impacto</div>
-      <svg viewBox="0 0 160 80" width="100%" style="display:block;margin-bottom:6px">
-        <rect x="10" y="38" width="16" height="32" rx="2" fill="rgba(255,255,255,.15)"/>
-        <rect x="30" y="24" width="16" height="46" rx="2" fill="rgba(255,255,255,.15)"/>
-        <rect x="50" y="46" width="16" height="24" rx="2" fill="rgba(255,255,255,.15)"/>
-        <rect x="70" y="30" width="16" height="40" rx="2" fill="var(--p5)" opacity=".9"/>
-        <rect x="90" y="50" width="16" height="20" rx="2" fill="rgba(255,255,255,.15)"/>
-        <rect x="110" y="34" width="16" height="36" rx="2" fill="rgba(255,255,255,.15)"/>
-        <text x="78" y="22" font-size="10" fill="var(--p5)" text-anchor="middle" font-family="system-ui" font-weight="700">↑ Meta</text>
-      </svg>
-      <p style="font-size:.9rem;color:var(--dim);text-align:center;margin:0 0 8px">Gris = neutro · color = mensaje</p>
-      <p>Primero diseñar en gris, luego aplicar un solo color a lo crítico.</p>
-    </div>
-  </div>
-</div>
-
-<div class="slide" data-p="5">
-  <div class="label" style="color:var(--p5)">Jerarquía visual</div>
-  <h2>La esquina más valiosa del dashboard</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;max-width:820px;width:100%;margin:16px 0;align-items:start">
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <p style="font-size:1.14rem;color:var(--muted)">A falta de señales, leemos de <strong>arriba-izquierda en zigzag</strong>. El espacio superior izquierdo es el bien inmobiliario más valioso del dashboard.</p>
-      <div style="background:rgba(184,56,128,.07);border:1px solid rgba(184,56,128,.25);border-radius:10px;padding:13px 15px">
-        <div style="font-size:1.08rem;font-weight:700;color:var(--p5);margin-bottom:6px">Reglas de jerarquía</div>
-        <div style="display:flex;flex-direction:column;gap:9px">
-          <div style="display:flex;align-items:flex-start;gap:10px;font-size:1.06rem;color:var(--muted);line-height:1.45">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--p5);flex-shrink:0;margin-top:4px"></span>
-            <span>KPI principal: <strong>arriba a la izquierda</strong></span>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:10px;font-size:1.06rem;color:var(--muted);line-height:1.45">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--p5);flex-shrink:0;margin-top:4px"></span>
-            <span>Gráfico principal: centro o centro-izquierda</span>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:10px;font-size:1.06rem;color:var(--muted);line-height:1.45">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--p5);flex-shrink:0;margin-top:4px"></span>
-            <span>Contexto y detalles: abajo o derecha</span>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:10px;font-size:1.06rem;color:var(--muted);line-height:1.45">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--p5);flex-shrink:0;margin-top:4px"></span>
-            <span>Filtros: arriba derecha — discretos</span>
-          </div>
+    <!-- 3. Medal Tally -->
+    <div class="dataset">
+      <div class="ds-header raw">
+        <span class="ds-title">Olympic_Games_Medal_Tally.csv</span>
+        <div class="ds-meta">
+          <span class="ds-pill pill-raw">Raw</span>
+          <span class="ds-pill pill-rows">1.807 filas</span>
+          <span class="ds-pill" style="background:#f3f4f6;color:#374151">Olympedia (Kaggle)</span>
         </div>
       </div>
+      <div class="ds-desc"><strong>Fuente principal de medallas del estudio.</strong> Medal tally oficial por país y edición olímpica. Validado 100% contra <em>medals_1994_2024.csv</em> para el período 2000–2020.</div>
+      <table class="field-table">
+        <tr><th>Campo</th><th>Tipo</th><th>Nulos</th><th>Rango / Valores</th><th>Descripción</th></tr>
+        <tr><td class="fname">edition</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>55 ediciones</td><td>Nombre de la edición</td></tr>
+        <tr><td class="fname">edition_id</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>1 – 62</td><td>ID numérico de la edición</td></tr>
+        <tr><td class="fname">year</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>1896 – 2022</td><td>Año de la edición</td></tr>
+        <tr><td class="fname">country</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>154 países</td><td>Nombre completo del país</td></tr>
+        <tr><td class="fname">country_noc</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>154 países</td><td>Código NOC de 3 letras</td></tr>
+        <tr><td class="fname">gold</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>0 – 83</td><td>Medallas de oro</td></tr>
+        <tr><td class="fname">silver</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>0 – 85</td><td>Medallas de plata</td></tr>
+        <tr><td class="fname">bronze</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>0 – 83</td><td>Medallas de bronce</td></tr>
+        <tr><td class="fname">total</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>1 – 248</td><td>Total de medallas (gold + silver + bronze)</td></tr>
+      </table>
+      <div class="note-box">Incluye Summer y Winter. Filtrar siempre por <code>edition LIKE '%Summer%'</code> para el estudio.</div>
     </div>
-    <svg viewBox="0 0 200 150" width="100%" style="display:block;overflow:hidden">
-      <rect x="5" y="5" width="190" height="130" rx="5" fill="var(--card-bg)" stroke="var(--border)" stroke-width="1"/>
-      <rect x="12" y="12" width="80" height="48" rx="3" fill="var(--p5)" opacity=".15" stroke="var(--p5)" stroke-width="1.5"/>
-      <text x="52" y="36" font-size="9" font-weight="800" fill="var(--p5)" text-anchor="middle" font-family="system-ui">★ KPI</text>
-      <text x="52" y="50" font-size="7" fill="var(--muted)" text-anchor="middle" font-family="system-ui">mensaje principal aquí</text>
-      <rect x="100" y="12" width="46" height="20" rx="3" fill="var(--card-bg)" stroke="var(--border)" stroke-width=".8"/>
-      <rect x="152" y="12" width="38" height="20" rx="3" fill="var(--card-bg)" stroke="var(--border)" stroke-width=".8"/>
-      <rect x="12" y="68" width="178" height="58" rx="3" fill="var(--card-bg)" stroke="var(--border)" stroke-width=".8"/>
-      <polyline points="20,112 48,98 76,104 104,88 132,96 160,78 182,84" fill="none" stroke="var(--p5)" stroke-width="2" stroke-linecap="round" opacity=".6"/>
-      <text x="100" y="146" font-size="7" fill="var(--dim)" text-anchor="middle" font-family="system-ui">← Patrón Z de lectura →</text>
-    </svg>
-  </div>
-</div>
 
-<div class="slide" data-p="5">
-  <div class="label" style="color:var(--p5)">Pensar como diseñador</div>
-  <h2>Hacer lo obvio accesible — diseñar para la audiencia</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;max-width:820px;width:100%;margin:16px 0;align-items:start">
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <p style="font-size:1.14rem;color:var(--muted)">Nuestro gráfico debe <strong>"pedir ser leído"</strong> de forma obvia. Las anotaciones directas hacen las conclusiones instantáneamente accesibles para cualquier audiencia.</p>
-      <div style="background:rgba(184,56,128,.07);border:1px solid rgba(184,56,128,.25);border-radius:10px;padding:13px 15px">
-        <div style="font-size:1.08rem;font-weight:700;color:var(--p5);margin-bottom:8px">Checklist de accesibilidad visual</div>
-        <div style="display:flex;flex-direction:column;gap:7px">
-          <div style="display:flex;align-items:center;gap:8px">
-            <span class="chip" style="background:rgba(224,92,173,.1);border:1px solid var(--p5);color:var(--p5)">✓</span>
-            <span style="font-size:1.06rem;color:var(--muted)">Texto directo en el pico del gráfico</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px">
-            <span class="chip" style="background:rgba(224,92,173,.1);border:1px solid var(--p5);color:var(--p5)">✓</span>
-            <span style="font-size:1.06rem;color:var(--muted)">Lenguaje simple, sin jerga técnica</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px">
-            <span class="chip" style="background:rgba(224,92,173,.1);border:1px solid var(--p5);color:var(--p5)">✓</span>
-            <span style="font-size:1.06rem;color:var(--muted)">Contraste mínimo 4.5:1 (WCAG AA)</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px">
-            <span class="chip" style="background:rgba(247,106,106,.1);border:1px solid #f76a6a;color:#f76a6a">✗</span>
-            <span style="font-size:1.06rem;color:var(--muted)">Leyendas separadas que exigen búsqueda ocular</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px">
-            <span class="chip" style="background:rgba(247,106,106,.1);border:1px solid #f76a6a;color:#f76a6a">✗</span>
-            <span style="font-size:1.06rem;color:var(--muted)">Color como único indicador (daltonismo)</span>
-          </div>
+    <!-- 4. Country -->
+    <div class="dataset">
+      <div class="ds-header raw">
+        <span class="ds-title">Olympics_Country.csv</span>
+        <div class="ds-meta">
+          <span class="ds-pill pill-raw">Raw · Dimensión</span>
+          <span class="ds-pill pill-rows">235 filas</span>
+          <span class="ds-pill" style="background:#f3f4f6;color:#374151">Olympedia (Kaggle)</span>
         </div>
       </div>
+      <div class="ds-desc">Tabla de referencia de códigos NOC y nombres de países. Usar para enriquecer visualizaciones con nombres completos.</div>
+      <table class="field-table">
+        <tr><th>Campo</th><th>Tipo</th><th>Nulos</th><th>Rango / Valores</th><th>Descripción</th></tr>
+        <tr><td class="fname">noc</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>234 únicos</td><td>Código NOC de 3 letras — clave primaria</td></tr>
+        <tr><td class="fname">country</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>235 únicos</td><td>Nombre completo del país</td></tr>
+      </table>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px">
-        <div style="font-size:.98rem;font-weight:700;color:var(--p5);margin-bottom:6px">Antes: leyenda separada</div>
-        <svg viewBox="0 0 160 70" width="100%" style="display:block">
-          <polyline points="10,50 40,38 70,44 100,28 130,36 150,22" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="2"/>
-          <polyline points="10,58 40,48 70,54 100,42 130,36 150,44" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="2"/>
-          <rect x="10" y="4" width="8" height="5" fill="rgba(255,255,255,.25)"/><text x="22" y="12" font-size="8" fill="rgba(255,255,255,.35)" font-family="system-ui">Serie A</text>
-          <rect x="60" y="4" width="8" height="5" fill="rgba(255,255,255,.12)"/><text x="72" y="12" font-size="8" fill="rgba(255,255,255,.35)" font-family="system-ui">Serie B</text>
-        </svg>
-      </div>
-      <div style="background:rgba(184,56,128,.07);border:1px solid var(--p5);border-radius:10px;padding:14px">
-        <div style="font-size:.98rem;font-weight:700;color:var(--p5);margin-bottom:6px">Después: etiqueta directa</div>
-        <svg viewBox="0 0 160 70" width="100%" style="display:block">
-          <polyline points="10,50 40,38 70,44 100,28 130,36 150,22" fill="none" stroke="var(--p5)" stroke-width="2.2"/>
-          <polyline points="10,58 40,48 70,54 100,42 130,36 150,44" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
-          <text x="152" y="20" font-size="9" fill="var(--p5)" font-family="system-ui" font-weight="700">A ▲</text>
-          <text x="152" y="47" font-size="9" fill="rgba(255,255,255,.4)" font-family="system-ui">B</text>
-        </svg>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- ══════════════ P6 ══════════════ -->
-<div class="slide" data-p="6">
-  <div class="label" style="color:var(--p6)">Sebastián Gines · Diseño de dashboards interactivos</div>
-  <h2>De mostrar datos a Contar una Historia</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:900px;width:100%;margin:18px 0;align-items:stretch">
-    <!-- Story steps as HTML (legible at any size) -->
-    <div style="display:flex;flex-direction:column;gap:10px;justify-content:center">
-      <div style="background:rgba(201,61,61,.07);border:2px solid var(--p6);border-radius:12px;padding:20px 22px">
-        <div style="font-size:.98rem;font-weight:800;color:var(--p6);letter-spacing:.8px;margin-bottom:7px">① PLANTEAMIENTO</div>
-        <div style="font-size:1.2rem;color:var(--muted);line-height:1.55">Situación y contexto <span style="color:var(--dim);font-size:1.08rem">(¿dónde estamos?)</span></div>
-      </div>
-      <div style="display:flex;justify-content:center;color:var(--p6);font-size:1.68rem;opacity:.45;line-height:1">↓</div>
-      <div style="background:rgba(247,106,106,.07);border:2px solid #d04040;border-radius:12px;padding:20px 22px">
-        <div style="font-size:.98rem;font-weight:800;color:#c93d3d;letter-spacing:.8px;margin-bottom:7px">② NUDO</div>
-        <div style="font-size:1.2rem;color:var(--muted);line-height:1.55">El conflicto o tensión <span style="color:var(--dim);font-size:1.08rem">(¿qué salió diferente?)</span></div>
-      </div>
-      <div style="display:flex;justify-content:center;color:#2a7a50;font-size:1.68rem;opacity:.45;line-height:1">↓</div>
-      <div style="background:rgba(76,175,125,.07);border:2px solid #4caf7d;border-radius:12px;padding:20px 22px">
-        <div style="font-size:.98rem;font-weight:800;color:#259655;letter-spacing:.8px;margin-bottom:7px">③ DESENLACE</div>
-        <div style="font-size:1.2rem;color:var(--muted);line-height:1.55">La acción con responsable <span style="color:var(--dim);font-size:1.08rem">(¿qué decidimos?)</span></div>
-      </div>
-    </div>
-    <!-- Quote + description -->
-    <div style="display:flex;flex-direction:column;gap:18px;justify-content:center">
-      <div class="analogy" style="margin:0">
-        <span class="qm">"</span>
-        Aristóteles lo enseñó hace siglos: toda buena historia tiene planteamiento, nudo y desenlace. El dashboard no debería ser diferente.
-      </div>
-      <p style="font-size:1.26rem;color:var(--muted);line-height:1.65">Un dashboard no es un volcado de métricas. Es una historia que <strong>establece escenario</strong>, muestra el <strong>conflicto</strong>, y finaliza con la <strong>resolución</strong>.</p>
-    </div>
-  </div>
-</div>
-
-<div class="slide" data-p="6">
-  <div class="label" style="color:var(--p6)">Título con insight</div>
-  <h2>El título es tu titular de noticias</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;max-width:820px;width:100%;margin:16px 0;align-items:start">
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <p style="font-size:1.14rem;color:var(--muted)">Si el lector solo lee los títulos, debe llevarse <strong>toda la historia</strong>. Un título descriptivo desaprovecha la oportunidad de comunicar.</p>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <div style="background:rgba(247,106,106,.06);border:1px solid rgba(247,106,106,.3);border-radius:8px;padding:12px 14px">
-          <div style="font-size:.78rem;color:#f76a6a;font-weight:700;text-transform:uppercase;margin-bottom:4px">✗ Descriptivo — sin mensaje</div>
-          <div style="font-size:1.2rem;font-weight:700;color:var(--muted)">"Ventas Trimestrales"</div>
-          <div style="font-size:.96rem;color:var(--dim);margin-top:4px">El lector debe interpretar. El trabajo queda en sus manos.</div>
-        </div>
-        <div style="text-align:center;font-size:1.08rem;color:var(--dim)">↓</div>
-        <div style="background:rgba(201,61,61,.08);border:1px solid var(--p6);border-radius:8px;padding:12px 14px">
-          <div style="font-size:.78rem;color:var(--p6);font-weight:700;text-transform:uppercase;margin-bottom:4px">✓ Con acción — decisión inmediata</div>
-          <div style="font-size:1.08rem;font-weight:700;color:var(--text)">"Las ventas cayeron 15% por stock insuficiente — acción urgente en compras"</div>
-          <div style="font-size:.96rem;color:var(--dim);margin-top:4px">El mensaje, la causa y la acción: todo en una línea.</div>
+    <!-- 5. Games -->
+    <div class="dataset">
+      <div class="ds-header raw">
+        <span class="ds-title">Olympics_Games.csv</span>
+        <div class="ds-meta">
+          <span class="ds-pill pill-raw">Raw · Dimensión</span>
+          <span class="ds-pill pill-rows">64 filas</span>
+          <span class="ds-pill" style="background:#f3f4f6;color:#374151">Olympedia (Kaggle)</span>
         </div>
       </div>
+      <div class="ds-desc">Metadata de cada edición olímpica: sede, fechas, país anfitrión. Incluye ediciones canceladas (WW1/WW2) y ediciones futuras hasta 2032.</div>
+      <table class="field-table">
+        <tr><th>Campo</th><th>Tipo</th><th>Nulos</th><th>Rango / Valores</th><th>Descripción</th></tr>
+        <tr><td class="fname">edition</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>—</td><td>Nombre completo de la edición — clave primaria de texto</td></tr>
+        <tr><td class="fname">edition_id</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>1 – 372</td><td>ID numérico de la edición</td></tr>
+        <tr><td class="fname">year</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>1896 – 2032</td><td>Año de la edición (incluye futuras)</td></tr>
+        <tr><td class="fname">city</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>45 ciudades</td><td>Ciudad sede</td></tr>
+        <tr><td class="fname">country_noc</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>25 países</td><td>NOC del país sede — usar para calcular <em>home_advantage</em></td></tr>
+        <tr><td class="fname">start_date / end_date</td><td><span class="ftype type-str">texto</span></td><td class="null-warn">~15%</td><td>—</td><td>Fechas de inicio y fin en texto. Convertir a date si se necesita.</td></tr>
+        <tr><td class="fname">isHeld</td><td><span class="ftype type-str">texto</span></td><td class="null-high">92.2%</td><td>"Not held due to war"</td><td>Solo tiene valor cuando los juegos no se celebraron. Null = se realizaron.</td></tr>
+      </table>
     </div>
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <div style="background:rgba(201,61,61,.07);border:1px solid rgba(201,61,61,.2);border-radius:10px;padding:14px 15px">
-        <div style="font-size:1.08rem;font-weight:700;color:var(--p6);margin-bottom:8px">Anatomía del título perfecto</div>
-        <div style="display:flex;flex-direction:column;gap:9px">
-          <div style="display:flex;align-items:flex-start;gap:10px;font-size:1.06rem;color:var(--muted);line-height:1.45">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--p6);flex-shrink:0;margin-top:4px"></span>
-            <span><strong>Qué pasó</strong> — el dato concreto</span>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:10px;font-size:1.06rem;color:var(--muted);line-height:1.45">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--p6);flex-shrink:0;margin-top:4px"></span>
-            <span><strong>Por qué</strong> — la causa (si se conoce)</span>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:10px;font-size:1.06rem;color:var(--muted);line-height:1.45">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--p6);flex-shrink:0;margin-top:4px"></span>
-            <span><strong>Qué hacer</strong> — la acción implícita o explícita</span>
-          </div>
+
+    <!-- 6. medals 1994-2024 -->
+    <div class="dataset">
+      <div class="ds-header raw">
+        <span class="ds-title">medals_1994_2024.csv</span>
+        <div class="ds-meta">
+          <span class="ds-pill pill-raw">Raw · Consolidado</span>
+          <span class="ds-pill pill-rows">879 filas</span>
+          <span class="ds-pill" style="background:#f3f4f6;color:#374151">muhammadehsan02 (Kaggle)</span>
         </div>
       </div>
-      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:13px 15px">
-        <div style="font-size:.98rem;font-weight:700;color:var(--muted);margin-bottom:4px">Test del taxi</div>
-        <div style="font-size:1.02rem;color:var(--muted)">Si no pudieras explicarle el dashboard a alguien en un viaje de 3 minutos, tu diseño no está listo.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="slide" data-p="6">
-  <div class="label" style="color:var(--p6)">Lógica narrativa</div>
-  <h2>Lógica horizontal y vertical</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:900px;width:100%;margin:14px 0;align-items:start">
-
-    <!-- IZQUIERDA: Horizontal -->
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <div style="background:rgba(201,61,61,.07);border:1px solid var(--p6);border-radius:10px;padding:14px 16px">
-        <div style="font-size:1.05rem;font-weight:700;color:var(--p6);margin-bottom:5px">↔ Lógica Horizontal</div>
-        <p style="font-size:.88rem;color:var(--muted);margin-bottom:12px;line-height:1.5">Leé solo los títulos en orden. Si juntos cuentan la historia sin ver ningún gráfico, la lógica horizontal está bien. <em>(Minto, 1987)</em></p>
-        <!-- Ejemplo concreto de 3 títulos encadenados -->
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <div style="background:var(--card-bg2);border-radius:7px;padding:8px 11px;font-size:.92rem;color:var(--text);font-weight:600">① "Las ventas cayeron 15% en Q3"</div>
-          <div style="text-align:center;color:var(--p6);font-size:.9rem;opacity:.6">↓</div>
-          <div style="background:var(--card-bg2);border-radius:7px;padding:8px 11px;font-size:.92rem;color:var(--text);font-weight:600">② "El problema se concentra en la región Norte"</div>
-          <div style="text-align:center;color:var(--p6);font-size:.9rem;opacity:.6">↓</div>
-          <div style="background:rgba(201,61,61,.1);border:1px solid rgba(201,61,61,.3);border-radius:7px;padding:8px 11px;font-size:.92rem;color:var(--p6);font-weight:700">③ "Reforzar el equipo Norte recupera el objetivo anual"</div>
-        </div>
-        <p style="font-size:.84rem;color:var(--dim);margin-top:8px">Solo los tres títulos ya cuentan la historia completa — sin ver ni un gráfico.</p>
-      </div>
+      <div class="ds-desc">Medal tally por país desde 1994 hasta <strong>Paris 2024</strong> (Summer + Winter). Consolidado en un único CSV a partir de 16 archivos individuales por edición. Validado contra Olympedia: diferencia 0 en todos los pares para los 4 países del estudio (2000–2020).</div>
+      <table class="field-table">
+        <tr><th>Campo</th><th>Tipo</th><th>Nulos</th><th>Rango / Valores</th><th>Descripción</th></tr>
+        <tr><td class="fname">noc</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>141 países</td><td>Código NOC del país</td></tr>
+        <tr><td class="fname">gold</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>0 – 48</td><td>Medallas de oro</td></tr>
+        <tr><td class="fname">silver</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>0 – 44</td><td>Medallas de plata</td></tr>
+        <tr><td class="fname">bronze</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>0 – 42</td><td>Medallas de bronce</td></tr>
+        <tr><td class="fname">total</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>1 – 126</td><td>Total de medallas</td></tr>
+        <tr><td class="fname">year</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>1994 – 2024</td><td>Año de la edición olímpica</td></tr>
+        <tr><td class="fname">season</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>Summer · Winter</td><td>Temporada</td></tr>
+      </table>
     </div>
 
-    <!-- DERECHA: Vertical + McKinsey -->
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <div style="background:rgba(201,61,61,.07);border:1px solid rgba(201,61,61,.25);border-radius:10px;padding:14px 16px">
-        <div style="font-size:1.05rem;font-weight:700;color:var(--p6);margin-bottom:4px">↕ Lógica Vertical</div>
-        <p style="font-size:.88rem;color:var(--muted);margin-bottom:12px;line-height:1.5">El título anuncia el mensaje. El gráfico lo prueba. <strong>Si muestran cosas distintas, la diapositiva está rota.</strong></p>
-        <!-- Ejemplo vertical: título + gráfico alineado vs. no alineado -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div style="border-radius:8px;border:1px solid rgba(247,106,106,.35);padding:10px 8px;text-align:center">
-            <div style="font-size:.75rem;color:var(--p6);font-weight:700;margin-bottom:5px">✗ Desalineado</div>
-            <div style="font-size:.75rem;color:var(--muted);font-style:italic;margin-bottom:8px">"Ventas cayeron en Norte"</div>
-            <!-- Donut chart — irrelevante para el título -->
-            <svg viewBox="0 0 80 54" width="100%" style="display:block;overflow:hidden">
-              <!-- circumference(r=14) ≈ 87.96 -->
-              <circle cx="40" cy="24" r="14" fill="none" stroke="var(--p2)" stroke-width="10"
-                stroke-dasharray="61.6 26.4" opacity=".35"/>
-              <circle cx="40" cy="24" r="14" fill="none" stroke="var(--p6)" stroke-width="10"
-                stroke-dasharray="26.4 61.6" stroke-dashoffset="-61.6" opacity=".45"/>
-              <circle cx="40" cy="24" r="6" fill="var(--surface)"/>
-              <text x="40" y="44" font-size="5.5" fill="var(--dim)" text-anchor="middle" font-family="system-ui">participación</text>
-              <text x="40" y="51" font-size="5.5" fill="var(--dim)" text-anchor="middle" font-family="system-ui">de mercado</text>
-            </svg>
-          </div>
-          <div style="border-radius:8px;border:1px solid rgba(30,138,74,.35);padding:10px 8px;text-align:center">
-            <div style="font-size:.75rem;color:var(--p3);font-weight:700;margin-bottom:5px">✓ Alineado</div>
-            <div style="font-size:.75rem;color:var(--muted);font-style:italic;margin-bottom:8px">"Ventas cayeron en Norte"</div>
-            <!-- Bar chart por región — responde al título -->
-            <svg viewBox="0 0 100 54" width="100%" style="display:block;overflow:hidden">
-              <rect x="5"  y="26" width="13" height="16" rx="1.5" fill="var(--p2)" opacity=".65"/>
-              <rect x="28" y="20" width="13" height="22" rx="1.5" fill="var(--p2)" opacity=".65"/>
-              <rect x="51" y="10" width="13" height="32" rx="1.5" fill="var(--p6)" opacity=".85"/>
-              <rect x="74" y="23" width="13" height="19" rx="1.5" fill="var(--p2)" opacity=".65"/>
-              <text x="11"  y="48" font-size="5.5" fill="var(--dim)" text-anchor="middle" font-family="system-ui">Sur</text>
-              <text x="34"  y="48" font-size="5.5" fill="var(--dim)" text-anchor="middle" font-family="system-ui">Este</text>
-              <text x="57"  y="48" font-size="5.5" fill="var(--p6)" text-anchor="middle" font-family="system-ui" font-weight="700">Norte</text>
-              <text x="80"  y="48" font-size="5.5" fill="var(--dim)" text-anchor="middle" font-family="system-ui">Oeste</text>
-            </svg>
-          </div>
+    <!-- 7. World Bank -->
+    <div class="dataset">
+      <div class="ds-header raw">
+        <span class="ds-title">worldbank_economics.csv</span>
+        <div class="ds-meta">
+          <span class="ds-pill pill-raw">Raw</span>
+          <span class="ds-pill pill-rows">84 filas</span>
+          <span class="ds-pill" style="background:#f3f4f6;color:#374151">World Bank API</span>
         </div>
       </div>
-      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
-        <div style="font-size:.95rem;font-weight:700;color:var(--muted);margin-bottom:4px">Pirámide McKinsey + Bing Bang Bongo</div>
-        <div style="font-size:.92rem;color:var(--muted);line-height:1.55">Ambas estructuras aplican la misma idea: <strong>primero la conclusión</strong>, luego los argumentos, luego los datos. La audiencia ejecutiva no debería tener que esperar al final para entender de qué se trata.</div>
+      <div class="ds-desc">PIB, PIB per cápita y población para los 4 países del estudio, <strong>todos los años 2000–2020</strong> (no solo años olímpicos). Descargado directamente de la API del Banco Mundial (<code>NY.GDP.MKTP.CD</code>, <code>NY.GDP.PCAP.CD</code>, <code>SP.POP.TOTL</code>).</div>
+      <table class="field-table">
+        <tr><th>Campo</th><th>Tipo</th><th>Nulos</th><th>Rango / Valores</th><th>Descripción</th></tr>
+        <tr><td class="fname">noc</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>GBR · USA · CHN · JPN</td><td>Código NOC del país</td></tr>
+        <tr><td class="fname">year</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>2000 – 2020</td><td>Año (todos los años, no solo olímpicos)</td></tr>
+        <tr><td class="fname">gdp_usd_bn</td><td><span class="ftype type-float">decimal</span></td><td class="null-ok">0%</td><td>1.223 – 21.380 USD bn</td><td>PIB en miles de millones de USD corrientes</td></tr>
+        <tr><td class="fname">gdp_per_capita_usd</td><td><span class="ftype type-float">decimal</span></td><td class="null-ok">0%</td><td>969 – 64.746 USD</td><td>PIB per cápita en USD corrientes</td></tr>
+        <tr><td class="fname">population_M</td><td><span class="ftype type-float">decimal</span></td><td class="null-ok">0%</td><td>58,89 – 1.411 M</td><td>Población en millones de personas</td></tr>
+      </table>
+      <div class="note-box">Valores en USD corrientes (no constantes). Para comparaciones históricas entre distintos años, considerar deflactar por CPI o usar el PIB en USD constantes del Banco Mundial.</div>
+    </div>
+
+  </div><!-- /panel-raw -->
+
+  <!-- PANEL: PROCESADAS -->
+  <div id="panel-proc" class="panel">
+
+    <!-- fact_investment_real -->
+    <div class="dataset">
+      <div class="ds-header proc">
+        <span class="ds-title">fact_investment_real.csv</span>
+        <div class="ds-meta">
+          <span class="ds-pill pill-proc">Procesado</span>
+          <span class="ds-pill pill-rows">7 filas</span>
+          <span class="ds-pill" style="background:#f3f4f6;color:#374151">UK Sport PDF oficial</span>
+        </div>
       </div>
+      <div class="ds-desc">Inversión total de UK Sport por ciclo olímpico para GBR, con lags calculados. Extraído directamente del PDF oficial publicado en <em>uksport.gov.uk</em>.</div>
+      <table class="field-table">
+        <tr><th>Campo</th><th>Tipo</th><th>Nulos</th><th>Rango / Valores</th><th>Descripción</th></tr>
+        <tr><td class="fname">noc</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>GBR (siempre)</td><td>Código NOC — solo GBR tiene datos de inversión disponibles</td></tr>
+        <tr><td class="fname">year</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>2000 – 2024</td><td>Año del JJ.OO. al que corresponde el ciclo</td></tr>
+        <tr><td class="fname">cycle</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>Sydney … Paris</td><td>Nombre de la olimpiada del ciclo de inversión</td></tr>
+        <tr><td class="fname">investment_olympic_GBP</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>37.229.727 – 239.344.884</td><td>Inversión en deportes olímpicos de verano en £ exactas (del PDF)</td></tr>
+        <tr><td class="fname">investment_total_M_GBP</td><td><span class="ftype type-float">decimal</span></td><td class="null-warn">14.3%</td><td>58,9 – 274,5 £M</td><td>Inversión total UK Sport incluyendo paralímpicos y Athlete Performance Awards. <strong>Usar este campo para el modelo.</strong></td></tr>
+        <tr><td class="fname">investment_lag1_M_GBP</td><td><span class="ftype type-float">decimal</span></td><td class="null-warn">14.3%</td><td>58,9 – 274,5 £M</td><td>Inversión total del ciclo anterior (4 años atrás) — para hipótesis de desfase</td></tr>
+        <tr><td class="fname">investment_lag2_M_GBP</td><td><span class="ftype type-float">decimal</span></td><td class="null-warn">28.6%</td><td>58,9 – 264,0 £M</td><td>Inversión total de dos ciclos atrás (8 años) — para hipótesis de desfase de 2 olimpiadas</td></tr>
+      </table>
+      <div class="note-box">Los nulos en <code>lag1</code> y <code>lag2</code> son esperados: los primeros ciclos no tienen historia previa suficiente.</div>
     </div>
 
-  </div>
-</div>
-
-<div class="slide" data-p="6">
-  <div class="label" style="color:var(--p6)">Conclusión</div>
-  <h2 style="margin-bottom:10px">Bing, Bang, Bongo — la audiencia es el héroe</h2>
-  <p style="font-size:clamp(1.32rem,3vw,1.74rem);color:var(--muted);line-height:1.6;max-width:680px;margin-bottom:20px">
-    El protagonista no es el dato.<br>
-    <strong style="color:var(--p6);font-size:1.1em">Es la audiencia.</strong>
-  </p>
-  <!-- Los tres pilares nombrados explícitamente -->
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;max-width:880px;width:100%;margin-bottom:14px">
-    <div style="background:rgba(107,91,224,.08);border:1px solid var(--p1);border-radius:13px;padding:20px 22px;text-align:left">
-      <div style="font-size:.74rem;font-weight:700;color:var(--p1);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px">① Principios de visualización</div>
-      <div style="font-size:1.05rem;color:var(--muted);line-height:1.6">Guían qué mostrar, cómo diseñarlo y cómo quitarle ruido al mensaje.</div>
-    </div>
-    <div style="background:rgba(224,92,173,.08);border:1px solid var(--p5);border-radius:13px;padding:20px 22px;text-align:left">
-      <div style="font-size:.74rem;font-weight:700;color:var(--p5);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px">② Storytelling con datos</div>
-      <div style="font-size:1.05rem;color:var(--muted);line-height:1.6">Convierte el dato en una decisión con contexto, tensión y resolución.</div>
-    </div>
-    <div style="background:rgba(201,61,61,.08);border:1px solid var(--p6);border-radius:13px;padding:20px 22px;text-align:left">
-      <div style="font-size:.74rem;font-weight:700;color:var(--p6);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px">③ Diseño de dashboards</div>
-      <div style="font-size:1.05rem;color:var(--muted);line-height:1.6">Integra todo en algo que la audiencia puede leer, entender y usar para actuar.</div>
-    </div>
-  </div>
-  <!-- Conclusión separada y explícita -->
-  <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px 26px;max-width:780px;margin-bottom:10px;text-align:center">
-    <span style="font-size:1.08rem;color:var(--muted)">
-      Sin los tres pilares juntos, el dashboard queda en una carpeta. &nbsp;·&nbsp; Con los tres, se convierte en un <strong style="color:var(--text)">motor de acción ejecutiva</strong>.
-    </span>
-  </div>
-  <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:12px 26px;max-width:720px">
-    <span style="font-size:1.08rem;color:var(--muted)">
-      <strong style="color:var(--text)">Bing:</strong> deciles de qué hablarás &nbsp;·&nbsp;
-      <strong style="color:var(--text)">Bang:</strong> hablales &nbsp;·&nbsp;
-      <strong style="color:var(--text)">Bongo:</strong> resumí
-    </span>
-  </div>
-</div>
-
-<!-- ══════════════ BIBLIOGRAFÍA ══════════════ -->
-<div class="slide" data-p="bib">
-  <div class="label" style="color:var(--pbib)">Bibliografía</div>
-  <h2 style="margin-bottom:8px;font-size:clamp(1.6rem,3.5vw,2.4rem)">Fuentes consultadas</h2>
-  <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;justify-content:center">
-    <span class="chip" style="background:rgba(107,91,224,.12);border:1px solid rgba(107,91,224,.3);color:var(--p1)">Obligatoria</span>
-    <span class="chip" style="background:rgba(61,110,217,.1);border:1px solid rgba(61,110,217,.25);color:var(--p2)">Ampliatoria</span>
-    <span class="chip" style="background:var(--card-bg);border:1px solid var(--border);color:var(--muted)">Visualización &amp; Estándares</span>
-  </div>
-
-  <div style="width:100%;max-width:1060px;display:flex;flex-direction:column;gap:12px">
-
-    <!-- Obligatoria · 3 cols × 2 rows -->
-    <div>
-      <div style="font-size:.78rem;font-weight:700;color:var(--p1);text-transform:uppercase;letter-spacing:.9px;margin-bottom:6px;display:flex;align-items:center;gap:8px"><span style="width:16px;height:2px;background:var(--p1);border-radius:1px;display:inline-block"></span>Obligatoria</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
-        <div class="bc" style="padding:9px 12px"><div class="bt" style="color:var(--p1);font-size:.7rem">BI</div><div class="bn" style="font-size:.86rem">Business Intelligence: Competir con información</div><div class="ba" style="font-size:.78rem">Cano, J.L. (2007) — Banesto, Fundación Cultur</div></div>
-        <div class="bc" style="padding:9px 12px"><div class="bt" style="color:var(--p1);font-size:.7rem">BI · Visión integral</div><div class="bn" style="font-size:.86rem">Business Intelligence: Competir con Información</div><div class="ba" style="font-size:.78rem">Turcato, A. y otros — Ediciones Granica</div></div>
-        <div class="bc" style="padding:9px 12px"><div class="bt" style="color:var(--p1);font-size:.7rem">BI · Managerial</div><div class="bn" style="font-size:.86rem">Business Intelligence: A Managerial Approach (3ª ed.)</div><div class="ba" style="font-size:.78rem">Larson, D. &amp; Chang, V. (2016) — Pearson</div></div>
-        <div class="bc" style="padding:9px 12px"><div class="bt" style="color:var(--p1);font-size:.7rem">Storytelling</div><div class="bn" style="font-size:.86rem">Storytelling with Data</div><div class="ba" style="font-size:.78rem">Nussbaumer Knaflic, C. (2015) — Wiley / Anaya</div></div>
-        <div class="bc" style="padding:9px 12px"><div class="bt" style="color:var(--p1);font-size:.7rem">BI · Técnicas</div><div class="bn" style="font-size:.86rem">BI: Técnicas y herramientas para decisiones</div><div class="ba" style="font-size:.78rem">Cano, J.L. — ESADE</div></div>
-        <div class="bc" style="padding:9px 12px"><div class="bt" style="color:var(--p1);font-size:.7rem">BI · Herramientas</div><div class="bn" style="font-size:.86rem">Inteligencia de Negocios: Herramientas y técnicas</div><div class="ba" style="font-size:.78rem">Beltrán, G. — Editorial pendiente</div></div>
+    <!-- uksport_by_sport -->
+    <div class="dataset">
+      <div class="ds-header proc">
+        <span class="ds-title">uksport_by_sport.csv</span>
+        <div class="ds-meta">
+          <span class="ds-pill pill-proc">Procesado</span>
+          <span class="ds-pill pill-rows">173 filas</span>
+          <span class="ds-pill" style="background:#f3f4f6;color:#374151">UK Sport PDF oficial</span>
+        </div>
       </div>
+      <div class="ds-desc">Inversión de UK Sport desglosada por deporte y ciclo olímpico (Sydney a Paris). Permite cruzar inversión por disciplina con medallas ganadas en esa misma disciplina para GBR.</div>
+      <table class="field-table">
+        <tr><th>Campo</th><th>Tipo</th><th>Nulos</th><th>Rango / Valores</th><th>Descripción</th></tr>
+        <tr><td class="fname">sport</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>34 deportes</td><td>Nombre del deporte olímpico</td></tr>
+        <tr><td class="fname">cycle</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>Sydney … Paris</td><td>Nombre de la olimpiada del ciclo</td></tr>
+        <tr><td class="fname">year</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>2000 – 2024</td><td>Año de la olimpiada</td></tr>
+        <tr><td class="fname">investment_GBP</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>8.400 – 29.172.590 £</td><td>Inversión recibida por ese deporte en ese ciclo en £ exactas</td></tr>
+      </table>
     </div>
 
-    <!-- Ampliatoria · 4 cols × 1 row -->
-    <div>
-      <div style="font-size:.78rem;font-weight:700;color:var(--p2);text-transform:uppercase;letter-spacing:.9px;margin-bottom:6px;display:flex;align-items:center;gap:8px"><span style="width:16px;height:2px;background:var(--p2);border-radius:1px;display:inline-block"></span>Ampliatoria</div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
-        <div class="bc" style="padding:9px 12px"><div class="bt" style="color:var(--p2);font-size:.7rem">Data Warehouse</div><div class="bn" style="font-size:.86rem">Building the Data Warehouse</div><div class="ba" style="font-size:.78rem">Inmon, W.H. — Wiley</div></div>
-        <div class="bc" style="padding:9px 12px"><div class="bt" style="color:var(--p2);font-size:.7rem">Data Warehouse</div><div class="bn" style="font-size:.86rem">The Data Warehouse Toolkit</div><div class="ba" style="font-size:.78rem">Kimball, R. — Wiley</div></div>
-        <div class="bc" style="padding:9px 12px"><div class="bt" style="color:var(--p2);font-size:.7rem">Visualización</div><div class="bn" style="font-size:.86rem">Show Me the Numbers (2ª ed.)</div><div class="ba" style="font-size:.78rem">Few, S. (2012) — Analytics Press</div></div>
-        <div class="bc" style="padding:9px 12px"><div class="bt" style="color:var(--p2);font-size:.7rem">Analytics competitivo</div><div class="bn" style="font-size:.86rem">Competing on Analytics</div><div class="ba" style="font-size:.78rem">Davenport, T.H. — Harvard Business Review Press</div></div>
+    <!-- fact_performance -->
+    <div class="dataset">
+      <div class="ds-header proc">
+        <span class="ds-title">fact_performance.csv</span>
+        <div class="ds-meta">
+          <span class="ds-pill pill-proc">Procesado</span>
+          <span class="ds-pill pill-rows">506 filas</span>
+          <span class="ds-pill" style="background:#f3f4f6;color:#374151">Olympedia · construido</span>
+        </div>
       </div>
+      <div class="ds-desc">Medallas y conteo de atletas para <strong>todos los países</strong> con medallas en JJ.OO. de Verano 2000–2020. Construida a partir de <em>Olympic_Games_Medal_Tally.csv</em> (medallas oficiales) y <em>Olympic_Athlete_Event_Results.csv</em> (atletas únicos).</div>
+      <table class="field-table">
+        <tr><th>Campo</th><th>Tipo</th><th>Nulos</th><th>Rango / Valores</th><th>Descripción</th></tr>
+        <tr><td class="fname">noc</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>126 países</td><td>Código NOC del país</td></tr>
+        <tr><td class="fname">year</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>2000 – 2020</td><td>Año del JJ.OO.</td></tr>
+        <tr><td class="fname">total_medals</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>1 – 121</td><td>Total de medallas oficiales (del Medal Tally)</td></tr>
+        <tr><td class="fname">gold_medals</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>0 – 48</td><td>Medallas de oro</td></tr>
+        <tr><td class="fname">silver_medals</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>0 – 41</td><td>Medallas de plata</td></tr>
+        <tr><td class="fname">bronze_medals</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>0 – 38</td><td>Medallas de bronce</td></tr>
+        <tr><td class="fname">athletes_count</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>2 – 632</td><td>Atletas únicos enviados por ese país en esa edición</td></tr>
+        <tr><td class="fname">medals_per_athlete</td><td><span class="ftype type-float">decimal</span></td><td class="null-ok">0%</td><td>0,007 – 0,600</td><td>Ratio de eficiencia: <code>total_medals / athletes_count</code></td></tr>
+      </table>
     </div>
 
-    <!-- Visualización & Estándares · 5 cols × 1 row -->
-    <div>
-      <div style="font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.9px;margin-bottom:6px;display:flex;align-items:center;gap:8px"><span style="width:16px;height:2px;background:var(--muted);border-radius:1px;display:inline-block"></span>Visualización &amp; Estándares</div>
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">
-        <div class="bc" style="padding:9px 12px"><div class="bt" style="font-size:.7rem">Clásico</div><div class="bn" style="font-size:.86rem">The Visual Display of Quantitative Information</div><div class="ba" style="font-size:.78rem">Tufte, E. (2001) — Graphics Press</div></div>
-        <div class="bc" style="padding:9px 12px"><div class="bt" style="font-size:.7rem">Dashboards</div><div class="bn" style="font-size:.86rem">Information Dashboard Design (2ª ed.)</div><div class="ba" style="font-size:.78rem">Few, S. (2013) — Analytics Press</div></div>
-        <div class="bc" style="padding:9px 12px"><div class="bt" style="font-size:.7rem">Storytelling</div><div class="bn" style="font-size:.86rem">Effective Data Storytelling</div><div class="ba" style="font-size:.78rem">Dykes, B. (2019) — Wiley</div></div>
-        <div class="bc" style="padding:9px 12px"><div class="bt" style="font-size:.7rem">Crítica visual</div><div class="bn" style="font-size:.86rem">How Charts Lie</div><div class="ba" style="font-size:.78rem">Cairo, A. (2019) — W.W. Norton</div></div>
-        <div class="bc" style="padding:9px 12px"><div class="bt" style="font-size:.7rem">Estándar WCAG</div><div class="bn" style="font-size:.86rem">Web Content Accessibility Guidelines 2.1</div><div class="ba" style="font-size:.78rem">W3C (2018) — w3.org</div></div>
+    <!-- fact_analytical -->
+    <div class="dataset">
+      <div class="ds-header proc">
+        <span class="ds-title">fact_analytical.csv ⭐</span>
+        <div class="ds-meta">
+          <span class="ds-pill pill-proc">Tabla maestra</span>
+          <span class="ds-pill pill-rows">24 filas</span>
+          <span class="ds-pill" style="background:#f3f4f6;color:#374151">Join de todos los datasets</span>
+        </div>
       </div>
+      <div class="ds-desc"><strong>Tabla central del análisis.</strong> Una fila por país × edición olímpica para los 4 países del estudio (4 × 6 = 24 filas). Combina medallas, atletas, PIB, inversión y variables calculadas. Es el punto de entrada para responder las 5 hipótesis.</div>
+      <table class="field-table">
+        <tr><th>Campo</th><th>Tipo</th><th>Nulos</th><th>Rango / Valores</th><th>Descripción</th></tr>
+        <tr><td class="fname">noc</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>GBR · USA · CHN · JPN</td><td>Código NOC del país</td></tr>
+        <tr><td class="fname">country_name</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>4 países</td><td>Nombre completo del país</td></tr>
+        <tr><td class="fname">investment_model</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>4 modelos</td><td><code>estatal_planificado</code> · <code>privado_descentralizado</code> · <code>estatal_centralizado</code> · <code>mixto</code></td></tr>
+        <tr><td class="fname">year</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>2000 – 2020</td><td>Año del JJ.OO.</td></tr>
+        <tr><td class="fname">city</td><td><span class="ftype type-str">texto</span></td><td class="null-ok">0%</td><td>6 ciudades</td><td>Ciudad sede de la edición</td></tr>
+        <tr><td class="fname">total_medals</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>18 – 121</td><td>Total de medallas oficiales</td></tr>
+        <tr><td class="fname">gold_medals</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>5 – 48</td><td>Medallas de oro</td></tr>
+        <tr><td class="fname">silver_medals</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>8 – 41</td><td>Medallas de plata</td></tr>
+        <tr><td class="fname">bronze_medals</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>5 – 38</td><td>Medallas de bronce</td></tr>
+        <tr><td class="fname">athletes_count</td><td><span class="ftype type-int">entero</span></td><td class="null-ok">0%</td><td>268 – 628</td><td>Atletas únicos enviados</td></tr>
+        <tr><td class="fname">medals_per_athlete</td><td><span class="ftype type-float">decimal</span></td><td class="null-ok">0%</td><td>0,066 – 0,243</td><td>Eficiencia: <code>total_medals / athletes_count</code></td></tr>
+        <tr><td class="fname">gdp_usd_bn</td><td><span class="ftype type-float">decimal</span></td><td class="null-ok">0%</td><td>1.223 – 21.060 USD bn</td><td>PIB en miles de millones USD corrientes (World Bank)</td></tr>
+        <tr><td class="fname">gdp_per_capita_usd</td><td><span class="ftype type-float">decimal</span></td><td class="null-ok">0%</td><td>969 – 63.516 USD</td><td>PIB per cápita en USD corrientes (World Bank)</td></tr>
+        <tr><td class="fname">population_M</td><td><span class="ftype type-float">decimal</span></td><td class="null-ok">0%</td><td>58,89 – 1.411 M</td><td>Población en millones (World Bank)</td></tr>
+        <tr><td class="fname">investment_M_GBP</td><td><span class="ftype type-float">decimal</span></td><td class="null-high">75%</td><td>58,9 – 274,5 £M</td><td>Inversión UK Sport en £M. <strong>Solo disponible para GBR</strong> — null para USA, CHN, JPN</td></tr>
+        <tr><td class="fname">investment_lag1_M_GBP</td><td><span class="ftype type-float">decimal</span></td><td class="null-high">79.2%</td><td>58,9 – 274,5 £M</td><td>Inversión del ciclo anterior — solo GBR</td></tr>
+        <tr><td class="fname">investment_lag2_M_GBP</td><td><span class="ftype type-float">decimal</span></td><td class="null-high">83.3%</td><td>58,9 – 264,0 £M</td><td>Inversión de dos ciclos atrás — solo GBR</td></tr>
+        <tr><td class="fname">medals_per_gdp_bn</td><td><span class="ftype type-float">decimal</span></td><td class="null-ok">0%</td><td>0,0036 – 0,0474</td><td>Eficiencia económica: <code>total_medals / gdp_usd_bn</code></td></tr>
+        <tr><td class="fname">is_home_advantage</td><td><span class="ftype type-bool">booleano</span></td><td class="null-ok">0%</td><td>True · False</td><td>True cuando el país es sede: CHN 2008, GBR 2012, JPN 2020</td></tr>
+      </table>
+      <div class="note-box">Los nulos en <code>investment_*</code> son estructurales: solo GBR publica datos de inversión comparables. Para USA, CHN y JPN usar <code>gdp_usd_bn</code> como proxy del contexto económico.</div>
     </div>
 
+  </div><!-- /panel-proc -->
+
+  <!-- PANEL: SCHEMA -->
+  <div id="panel-schema" class="panel">
+    <h2 style="margin-bottom:1rem;font-size:1.1rem">Esquema de relaciones entre archivos</h2>
+
+    <div class="schema-wrap">
+<span class="cmt">── TABLA CENTRAL ──────────────────────────────────────────────────</span>
+<span class="node">fact_analytical</span>          <span class="arrow">──→</span> <span class="node">Olympics_Country</span>      <span class="key">[noc = noc]</span>
+                          <span class="arrow">──→</span> <span class="node">Olympics_Games</span>        <span class="key">[year = year + season=Summer]</span>
+                          <span class="arrow">──→</span> <span class="node">worldbank_economics</span>   <span class="key">[noc + year = noc + year]</span>
+                          <span class="arrow">──→</span> <span class="node">fact_investment_real</span>  <span class="key">[noc=GBR + year = noc + year]</span>
+
+<span class="cmt">── TABLA COMPLEMENTARIA (todos los países) ────────────────────────</span>
+<span class="node">fact_performance</span>         <span class="arrow">──→</span> <span class="node">Olympics_Country</span>      <span class="key">[noc = noc]</span>
+                          <span class="arrow">──→</span> <span class="node">Olympics_Games</span>        <span class="key">[year = year]</span>
+
+<span class="cmt">── INVERSIÓN POR DEPORTE ──────────────────────────────────────────</span>
+<span class="node">uksport_by_sport</span>         <span class="arrow">──→</span> <span class="node">fact_investment_real</span>  <span class="key">[year = year]</span>
+                          <span class="arrow">──→</span> <span class="node">Event_Results</span>        <span class="key">[sport + year + noc=GBR → medals por deporte]</span>
+
+<span class="cmt">── DATOS CRUDOS OLÍMPICOS ─────────────────────────────────────────</span>
+<span class="node">Event_Results</span>            <span class="arrow">──→</span> <span class="node">Olympic_Athlete_Bio</span>   <span class="key">[athlete_id = athlete_id]</span>
+                          <span class="arrow">──→</span> <span class="node">Olympics_Games</span>        <span class="key">[edition = edition]</span>
+                          <span class="arrow">──→</span> <span class="node">Olympics_Country</span>      <span class="key">[country_noc = noc]</span>
+
+<span class="cmt">── VALIDACIÓN CRUZADA ─────────────────────────────────────────────</span>
+<span class="node">medals_1994_2024</span>         <span class="arrow">──→</span> <span class="node">Medal_Tally</span>           <span class="key">[noc + year → diff = 0 ✓]</span>
+    </div>
+
+    <h2 style="margin:2rem 0 1rem;font-size:1.1rem">Tabla de joins recomendados</h2>
+    <table class="relation-table">
+      <tr>
+        <th>Tabla origen</th><th>Tabla destino</th><th>Clave de join</th><th>Tipo</th><th>Uso</th>
+      </tr>
+      <tr>
+        <td><code>fact_analytical</code></td>
+        <td><code>worldbank_economics</code></td>
+        <td class="join-key">noc + year</td>
+        <td>Muchos a uno</td>
+        <td>Agregar PIB anual exacto (no solo años olímpicos)</td>
+      </tr>
+      <tr>
+        <td><code>fact_analytical</code></td>
+        <td><code>fact_investment_real</code></td>
+        <td class="join-key">noc + year (filtrar noc=GBR)</td>
+        <td>Muchos a uno</td>
+        <td>Análisis de inversión y lags — H2 y H3</td>
+      </tr>
+      <tr>
+        <td><code>fact_performance</code></td>
+        <td><code>Olympics_Country</code></td>
+        <td class="join-key">noc</td>
+        <td>Muchos a uno</td>
+        <td>Enriquecer con nombre completo del país</td>
+      </tr>
+      <tr>
+        <td><code>Event_Results</code></td>
+        <td><code>Olympic_Athlete_Bio</code></td>
+        <td class="join-key">athlete_id</td>
+        <td>Muchos a uno</td>
+        <td>Análisis demográfico: edad, sexo, talla por deporte</td>
+      </tr>
+      <tr>
+        <td><code>uksport_by_sport</code></td>
+        <td><code>Event_Results</code></td>
+        <td class="join-key">sport + year + noc=GBR</td>
+        <td>Uno a muchos</td>
+        <td>ROI por deporte: £ invertidas vs medallas ganadas</td>
+      </tr>
+      <tr>
+        <td><code>medals_1994_2024</code></td>
+        <td><code>fact_analytical</code></td>
+        <td class="join-key">noc + year</td>
+        <td>Uno a uno</td>
+        <td>Extender análisis a Paris 2024 (bonus)</td>
+      </tr>
+    </table>
+
+    <h2 style="margin:2rem 0 1rem;font-size:1.1rem">Notas generales</h2>
+    <table class="relation-table">
+      <tr><th>Tema</th><th>Detalle</th></tr>
+      <tr><td>Período de estudio</td><td>Filtrar siempre <code>season = 'Summer'</code> y <code>year BETWEEN 2000 AND 2020</code></td></tr>
+      <tr><td>Monedas</td><td><code>investment_*</code> en £ GBP · <code>gdp_*</code> en USD — nunca mezclar sin conversión</td></tr>
+      <tr><td>Home advantage</td><td>Marcar como variable de control: CHN 2008 (+~40% vs promedio), GBR 2012 (+~40%), JPN 2020 (+~40%)</td></tr>
+      <tr><td>Inversión USA/CHN/JPN</td><td>No existe dataset público comparable a UK Sport. Usar <code>gdp_usd_bn</code> como proxy.</td></tr>
+      <tr><td>Deduplicación de equipos</td><td>Para contar medallas desde Event_Results, usar <code>isTeamSport</code> o <code>drop_duplicates(['event','noc','medal'])</code></td></tr>
+      <tr><td>PIB corriente vs constante</td><td>Los valores del World Bank están en USD corrientes. Para series temporales largas considerar deflactar.</td></tr>
+    </table>
   </div>
-</div>
 
-</div><!-- /stage -->
+</div><!-- /container -->
 
-<div class="bottombar">
-  <button class="nbtn" id="btn-prev" onclick="go(-1)" disabled>←</button>
-  <div class="pdots" id="dots"></div>
-  <button class="nbtn" id="btn-next" onclick="go(1)">→</button>
-</div>
+<footer>
+  <span>Proyecto: Rendimiento Olímpico vs Inversión Deportiva 2000–2020</span>
+  <span>Fuentes: Olympedia (Kaggle) · muhammadehsan02 (Kaggle) · UK Sport · World Bank API</span>
+</footer>
 
 <script>
-const slides = Array.from(document.querySelectorAll('.slide'));
-const byP = {};
-slides.forEach((s,i)=>{
-  const p=s.dataset.p;
-  if(!byP[p])byP[p]=[];
-  byP[p].push(i);
-});
-
-let cur=0;
-
-function accent(p){
-  const map={0:'var(--p1)',1:'var(--p1)',2:'var(--p2)',3:'var(--p3)',4:'var(--p4)',5:'var(--p5)',6:'var(--p6)',bib:'var(--pbib)'};
-  return map[p]||'var(--p1)';
+function showPanel(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  el.classList.add('active');
 }
-
-function renderDots(){
-  const d=document.getElementById('dots');
-  const p=slides[cur].dataset.p;
-  const g=byP[p];
-  const pos=g.indexOf(cur);
-  const ac=accent(p);
-  d.innerHTML=g.map((_,i)=>`<div class="pd${i===pos?' on':''}" onclick="goToInGroup(${i})" style="${i===pos?'background:'+ac:''}"></div>`).join('');
-}
-
-function goTo(i){
-  slides[cur].classList.remove('active');
-  cur=Math.max(0,Math.min(slides.length-1,i));
-  slides[cur].classList.add('active');
-  // Update pill
-  const p=slides[cur].dataset.p;
-  document.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
-  const pill=document.querySelector(`.pill[data-p="${p}"]`);
-  if(pill){pill.classList.add('active');pill.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});}
-  // Counter
-  const g=byP[p];
-  const pos=g.indexOf(cur)+1;
-  document.getElementById('ctr').textContent=pos+' / '+g.length;
-  document.getElementById('btn-prev').disabled=cur===0;
-  document.getElementById('btn-next').disabled=cur===slides.length-1;
-  renderDots();
-}
-
-function go(dir){goTo(cur+dir);}
-function gp(p){const g=byP[p];if(g)goTo(g[0]);}
-function goToInGroup(i){const p=slides[cur].dataset.p;const g=byP[p];goTo(g[i]);}
-
-document.addEventListener('keydown',e=>{
-  if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();go(1);}
-  if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();go(-1);}
-});
-
-function toggleTheme(){
-  const dark=document.body.classList.toggle('dark');
-  localStorage.setItem('theme',dark?'dark':'light');
-  document.getElementById('theme-btn').textContent=dark?'Claro':'Oscuro';
-}
-
-// Restore saved theme (default = light, no class needed)
-(function(){
-  if(localStorage.getItem('theme')==='dark'){
-    document.body.classList.add('dark');
-    document.getElementById('theme-btn').textContent='Claro';
-  }
-})();
-
-goTo(0);
 </script>
 </body>
 </html>
